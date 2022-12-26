@@ -1,7 +1,17 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  reactStrictMode: true,
-  swcMinify: true,
-}
+/**
+ * @type {import('next').NextConfig}
+ */
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const path = require('path');
 
-module.exports = nextConfig
+const nextConfig = {
+    reactStrictMode: true,
+
+    webpack: (config) => {
+        config.resolve.alias['~'] = path.resolve(__dirname, 'src');
+
+        return config;
+    },
+};
+
+module.exports = nextConfig;
