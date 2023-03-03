@@ -1,10 +1,11 @@
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { memo } from 'react';
 
 const DesktopNavigation = () => {
     return (
         <>
-            <div className="full-size smooth-effect flex items-center justify-end font-secondary text-3xl font-bold text-white">
+            <div className="full-size smooth-effect z-10 flex items-center justify-end font-secondary text-3xl font-bold text-white">
                 <ul>
                     <li className="group relative mx-6 cursor-pointer tracking-wide hover:underline hover:underline-offset-8">
                         <Link href="/">Shop</Link>
@@ -148,7 +149,7 @@ const DesktopNavigation = () => {
 
                 <ul>
                     <li className="group relative mx-6 cursor-pointer tracking-wide hover:underline hover:underline-offset-8">
-                        <Link href="/">Group buy</Link>
+                        <Link href="/">Group Buy</Link>
                         <div className="absolute -ml-6 hidden h-auto py-6 group-hover:flex">
                             <ul className="top-0 w-48 bg-[#fcf8ee] py-4 px-6 shadow">
                                 <li className="py-2">

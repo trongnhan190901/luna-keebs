@@ -4,18 +4,9 @@ import Footer from '~/components/partials/Footer';
 
 interface MainLayoutProps {
     children: ReactNode;
-    // showHeader: boolean;
-    // showFooter: boolean;
 }
 
-// const Header = dynamic(() => import('../partials/Header'));
-// const Footer = dynamic(() => import('../partials/Footer'));
-
-export default function MainLayout({
-    children,
-}: // showHeader,
-// showFooter,
-MainLayoutProps) {
+export default function MainLayout({ children }: MainLayoutProps) {
     return (
         <>
             <Header />

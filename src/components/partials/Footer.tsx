@@ -28,7 +28,7 @@ const Footer = () => {
                                 href="#"
                                 className="mr-4 hover:underline hover:underline-offset-4 md:mr-6"
                             >
-                                Câu hỏi
+                                Câu hỏi thường gặp
                             </a>
                         </li>
                     </ul>

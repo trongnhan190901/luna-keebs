@@ -6,7 +6,7 @@ import ButtonRedirect from '../buttons/ButtonRedirect';
 const Slider = () => {
     return (
         <>
-            <div className="h-screen w-full">
+            <div className="z-0 h-full w-full">
                 <Swiper
                     modules={[
                         Navigation,
@@ -32,17 +32,19 @@ const Slider = () => {
                                         <img
                                             draggable="false"
                                             src={item.img}
-                                            className="z-0 h-screen w-screen bg-contain object-cover brightness-75"
+                                            className="z-0 h-[89vh] w-screen bg-contain object-cover brightness-75"
                                         />
-
                                         <div className="absolute left-1/2 -mt-[35rem] -translate-x-1/2 font-secondary font-semibold">
                                             <div className="absolute-center flex-col">
                                                 <h2 className="h-[60px] w-full text-7xl leading-tight text-white">
                                                     {item.title}
                                                 </h2>
-                                                <ButtonRedirect
-                                                    href={item.href}
-                                                />
+                                                <div className="pt-16 md:pt-0">
+                                                    <ButtonRedirect
+                                                        href={item.href}
+                                                        title={'Mua ngay'}
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
