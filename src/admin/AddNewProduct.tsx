@@ -1,15 +1,16 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import { Dialog, Transition } from '@headlessui/react';
-import { inferProcedureInput } from '@trpc/server';
+import type { inferProcedureInput } from '@trpc/server';
 import { useAtom } from 'jotai';
 import { Fragment } from 'react';
 import { addProductState } from '~/atoms/modalAtom';
-import type { AppRouter } from '~/server/routers/_app';
-import { trpc } from '~/utils/trpc';
+import type { AppRouter } from '~/server/api/root';
+import { api } from '~/utils/api';
 
 const AddNewProduct = () => {
     const [isOpen, setIsOpen] = useAtom(addProductState);
 
-    const addProduct = trpc.product.createProduct.useMutation();
+    const addProduct = api.product.createProduct.useMutation();
 
     return (
         <>

@@ -19,3 +19,5 @@ export const navbarState = atom(true);
 export const productQuantityState = atom(1);
 
 export const productEditState = atom({});
+
+export const storedState = atom([]);

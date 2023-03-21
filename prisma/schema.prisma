@@ -8,18 +8,18 @@ datasource db {
 }
 
 model Account {
-  id                 String  @id @default(auto()) @map("_id") @db.ObjectId
-  userId             String  @db.ObjectId
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token       String?  @db.String
-  access_token        String?  @db.String
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token            String?  @db.String
-  session_state      String?
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String  @db.ObjectId
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.String
+  access_token      String? @db.String
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.String
+  session_state     String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -47,17 +47,59 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
-  role          Role @default(User)
+  role          Role      @default(User)
+  orders        Order[]
 }
 
 model Product {
-  id              String     @id @default(auto()) @map("_id") @db.ObjectId
-  title           String 
-  type            String
-  image           String
-  price           String
-  quantity        String
-  spec            String
-  desc            String
-  slug            String @unique
-} 
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  title     String
+  type      String
+  categoryName  String   @unique
+  category    Category    @relation(fields: [categoryName], references: [name])
+  image     String
+  price     Int
+  quantity  Int
+  spec      String
+  desc      String
+  slug      String    @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
+  deleted     Boolean     @default(false)
+  orderItems  OrderItem[]
+}
+
+model Category {
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  name        String    @unique
+  image       String
+  description String
+  products    Product[]
+}
+
+model OrderItem {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  product   Product @relation(fields: [productId], references: [id])
+  productId String  @db.ObjectId
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId   String  @db.ObjectId
+}
+
+enum Status {
+  NotPaid
+  Processing
+  Failed
+  Paid
+}
+
+model Order {
+  id                        String      @id @default(auto()) @map("_id") @db.ObjectId
+  user                      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId                    String      @db.ObjectId
+  status                    Status      @default(NotPaid)
+  orderItems                OrderItem[]
+  createdAt                 DateTime    @default(now())
+  updatedAt                 DateTime?
+  stripePaymentIntentId     String?
+  stripePaymentClientSecret String?
+}

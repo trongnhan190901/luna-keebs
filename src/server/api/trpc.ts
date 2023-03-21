@@ -17,8 +17,8 @@
 import { type CreateNextContextOptions } from '@trpc/server/adapters/next';
 import { type Session } from 'next-auth';
 
-import { getServerAuthSession } from '~/server/auth';
-import { prisma } from '~/server/db';
+import { getServerAuthSession } from '~/libs/server/auth';
+import { db } from '~/libs/server/db';
 
 type CreateContextOptions = {
     session: Session | null;
@@ -37,7 +37,7 @@ type CreateContextOptions = {
 const createInnerTRPCContext = (opts: CreateContextOptions) => {
     return {
         session: opts.session,
-        prisma,
+        prisma: db,
     };
 };
 
@@ -47,7 +47,7 @@ const createInnerTRPCContext = (opts: CreateContextOptions) => {
  *
  * @see https://trpc.io/docs/context
  */
-export const createTRPCContext = async (opts: CreateNextContextOptions) => {
+export const createContext = async (opts: CreateNextContextOptions) => {
     const { req, res } = opts;
 
     // Get the session from the server using the getServerSession wrapper function
@@ -69,7 +69,7 @@ import { initTRPC, TRPCError } from '@trpc/server';
 import superjson from 'superjson';
 import { ZodError } from 'zod';
 
-const t = initTRPC.context<typeof createTRPCContext>().create({
+const t = initTRPC.context<typeof createContext>().create({
     transformer: superjson,
     errorFormatter({ shape, error }) {
         return {
@@ -97,7 +97,7 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
  *
  * @see https://trpc.io/docs/router
  */
-export const createTRPCRouter = t.router;
+export const router = t.router;
 
 /**
  * Public (unauthenticated) procedure
