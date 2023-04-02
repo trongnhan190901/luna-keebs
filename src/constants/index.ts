@@ -178,3 +178,4 @@ export const SuggestItems = [
 
 export const LIMIT_SEARCH_INPUT = 50;
 export const PRODUCTS_PER_PAGE = 12;
+export const ITEMS_PER_PAGE = 8;

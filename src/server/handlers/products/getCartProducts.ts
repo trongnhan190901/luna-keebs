@@ -20,9 +20,6 @@ export const getCartProducts = async (
                 quantity: {
                     gt: 0,
                 },
-                sizes: {
-                    has: product.size,
-                },
             })),
         },
         include: {

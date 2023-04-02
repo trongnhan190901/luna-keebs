@@ -15,7 +15,7 @@ import {
     userMenuState,
 } from '~/atoms/modalAtom';
 import { useAtom } from 'jotai';
-// import ShoppingCart from '../shared/ShoppingCart';
+import ShoppingCart from '../shared/ShoppingCart';
 // import useShoppingCart from '~/context/ShoppingCartContext';
 
 const Header = () => {
@@ -57,7 +57,9 @@ const Header = () => {
                                     className="h-16 w-16 bg-transparent stroke-white"
                                     onClick={() => setIsCartOpen(!isCartOpen)}
                                 />
-                                <div className="absolute top-1/2 left-1/2 -z-10 mt-6 h-full -translate-x-1/2 -translate-y-1/2 font-secondary text-3xl text-white"></div>
+                                <div className="absolute top-1/2 left-1/2 -z-10 mt-6 h-full -translate-x-1/2 -translate-y-1/2 font-secondary text-3xl text-white">
+                                    <ShoppingCart />
+                                </div>
                             </div>
 
                             <div

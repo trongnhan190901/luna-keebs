@@ -53,6 +53,7 @@ export const adminRouter = router({
             }),
         )
         .mutation(async ({ input }) => getPreSignedUrl(input.id)),
+
     getCategoryList: adminProcedure.query(async ({ ctx }) => {
         return await ctx.prisma.category.findMany({
             select: {

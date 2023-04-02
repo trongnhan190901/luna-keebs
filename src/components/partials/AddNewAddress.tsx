@@ -31,7 +31,7 @@ const AddNewAddress = () => {
                                 Thêm địa chỉ mới
                             </Dialog.Title>
 
-                            <div className="flex flex-col space-y-7">
+                            <div className="full-size flex flex-col space-y-7">
                                 <div className="h-6 font-primary text-3xl font-bold ">
                                     Họ và tên
                                 </div>

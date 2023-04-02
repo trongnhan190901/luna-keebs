@@ -1,9 +1,9 @@
 import { useAtom } from 'jotai';
-import { NextPage } from 'next';
+import type { GetServerSideProps, NextPage } from 'next';
 import { getSession, useSession } from 'next-auth/react';
 import { newAddressState, logInState } from '~/atoms/modalAtom';
 import Login from '~/components/partials/Login';
-import AddNewAddress from '~/features/AddNewAddress';
+import AddNewAddress from '~/components/partials/AddNewAddress';
 
 const Account: NextPage = () => {
     const { data: session, status } = useSession();
@@ -63,7 +63,7 @@ const Account: NextPage = () => {
                 <div className="absolute-center smooth-effect  full-size mt-52 flex-col font-secondary text-6xl font-bold">
                     Bạn chưa đăng nhập
                     <div
-                        onClick={() => setIsLogin(true)}
+                        onClick={() => setIsLogin(!isLogin)}
                         className="absolute-center smooth-effect  mx-2 mt-16 h-20 w-64 rounded-3xl border-2 border-black font-secondary text-3xl font-bold hover:bg-black hover:text-white"
                     >
                         Đăng nhập
@@ -77,7 +77,7 @@ const Account: NextPage = () => {
 
 export default Account;
 
-export const getSetverSideProps = async (context: any) => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
     const session = await getSession(context);
 
     return {

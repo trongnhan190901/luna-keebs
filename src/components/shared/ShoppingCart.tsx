@@ -1,15 +1,16 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Dialog, Transition } from '@headlessui/react';
 import { useAtom } from 'jotai';
 import { Fragment } from 'react';
 import { shoppingCartState } from '~/atoms/modalAtom';
 import { XMarkIcon } from '@heroicons/react/24/outline';
-import useShoppingCart from '~/context/ShoppingCartContext';
-import CartItem from './CartItem';
+import { useCartContext } from '~/providers/CartContextProvider';
+import ShoppingCartItem from './ShoppingCartItem';
 
 const ShoppingCart = () => {
     const [isOpen, setIsOpen] = useAtom(shoppingCartState);
 
-    const { cartItems } = useShoppingCart();
+    const { cartItems } = useCartContext();
 
     const totalPrice = () => {
         const total = 0;
@@ -29,7 +30,7 @@ const ShoppingCart = () => {
                 >
                     <Dialog
                         open={isOpen}
-                        onClose={() => setIsOpen(false)}
+                        onClose={() => setIsOpen(!isOpen)}
                         as="div"
                         className="fixed inset-0 z-10 flex justify-end"
                     >
@@ -42,7 +43,7 @@ const ShoppingCart = () => {
                                     </Dialog.Title>
                                     <div
                                         className="flex w-full justify-end"
-                                        onClick={() => setIsOpen(false)}
+                                        onClick={() => setIsOpen(!isOpen)}
                                     >
                                         <div className="absolute-center smooth-effect group mx-12 h-12 w-12 rounded-full bg-gray-200 hover:scale-105 hover:border hover:border-black hover:stroke-black">
                                             <XMarkIcon className="h-10 w-10 stroke-gray-400 group-hover:scale-105 group-hover:stroke-black" />
@@ -50,10 +51,11 @@ const ShoppingCart = () => {
                                     </div>
                                 </div>
 
-                                {cartItems.map((item) => {
+                                {cartItems.map((item, index) => {
                                     return (
-                                        <CartItem
-                                            key={item.id}
+                                        <ShoppingCartItem
+                                            index={index}
+                                            key={index}
                                             product={item}
                                         />
                                     );

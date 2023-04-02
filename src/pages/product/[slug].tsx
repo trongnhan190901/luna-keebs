@@ -1,20 +1,46 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @next/next/no-img-element */
 import type { GetStaticPaths, GetStaticProps } from 'next';
 import type { Product } from '@prisma/client';
-import { prisma } from '~/libs/server/db';
+import { db } from '~/libs/server/db';
+import { useCartContext } from '~/providers/CartContextProvider';
+import { useState } from 'react';
 
 interface DetailsPageProps {
     product: Product;
 }
 
 const DetailsPage = ({ product }: DetailsPageProps) => {
+    const { id, title, image } = product;
+    const { cartItems, setCartItems } = useCartContext();
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handleAddToCart = () => {
+        setIsLoading(true);
+        setCartItems([
+            ...cartItems,
+            {
+                id,
+                title,
+                image,
+            },
+        ]);
+
+        setTimeout(() => {
+            setIsLoading(false);
+        }, 200);
+    };
+    console.log(cartItems);
+
     return (
         <>
             <div className="full-size mt-20 mb-24 flex flex-col items-start justify-center">
                 <div className=" flex h-full w-[90%] flex-row items-start justify-center">
                     <div className="mx-24 h-full w-[1000px]">
                         <img
-                            src={product?.image}
+                            src={`https://${product.image}`}
                             alt=""
                             className="h-[650px] w-[1000px] rounded-3xl object-cover"
                         />
@@ -46,7 +72,10 @@ const DetailsPage = ({ product }: DetailsPageProps) => {
                             </select>
                         </div>
 
-                        <button className="absolute-center my-8 h-20 w-96 overflow-hidden rounded-xl border-2 border-black font-secondary text-3xl font-medium text-black hover:bg-black hover:text-white">
+                        <button
+                            onClick={() => handleAddToCart()}
+                            className="absolute-center my-8 h-20 w-96 overflow-hidden rounded-xl border-2 border-black font-secondary text-3xl font-medium text-black hover:bg-black hover:text-white"
+                        >
                             Thêm vào giỏ hàng
                         </button>
                     </div>
@@ -119,13 +148,12 @@ const DetailsPage = ({ product }: DetailsPageProps) => {
     );
 };
 
-
 export const getStaticProps: GetStaticProps = async ({ params }: any) => {
     console.log(params);
-    
+
     const { slug } = params;
 
-    const product = await prisma.product.findUnique({
+    const product = await db.product.findUnique({
         where: {
             slug: slug,
         },
@@ -133,11 +161,12 @@ export const getStaticProps: GetStaticProps = async ({ params }: any) => {
 
     return {
         props: {
-            product,
+            product: JSON.parse(JSON.stringify(product)),
         },
     };
 };
 
+// eslint-disable-next-line @typescript-eslint/require-await
 export const getStaticPaths: GetStaticPaths<{ slug: string }> = async () => {
     return { paths: [], fallback: 'blocking' };
 };

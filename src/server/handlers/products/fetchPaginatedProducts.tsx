@@ -1,5 +1,5 @@
 import type { Prisma, PrismaClient } from '@prisma/client';
-import { Sort } from '../../../../../ecommerce-next13beta/src/server/routers/subRouters/admin.router';
+import { Sort } from '~/server/api/routers/admin.router';
 
 export const fetchPaginatedProducts = async (
     prisma: PrismaClient<
@@ -26,7 +26,7 @@ export const fetchPaginatedProducts = async (
             category: {
                 select: {
                     id: true,
-                    title: true,
+                    name: true,
                 },
             },
             _count: {

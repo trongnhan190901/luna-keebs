@@ -4,7 +4,7 @@ import { db } from '~/libs/server/db';
 
 export const fetchProductSuggestions = async ({
     prisma,
-    categoryId,
+    categoryName,
     skipProductId,
     limit,
 }: {
@@ -19,7 +19,7 @@ export const fetchProductSuggestions = async ({
 }) => {
     const products = await (prisma ?? db).product.findMany({
         where: {
-            categoryId,
+            categoryName,
             ...(skipProductId && {
                 NOT: {
                     id: skipProductId,

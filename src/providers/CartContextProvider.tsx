@@ -1,9 +1,7 @@
-'use client';
-
 import React, { createContext, useContext } from 'react';
-import { cartsSchema } from '../helpers/validations/cartItemSchema';
-import useLocalStorage from '../hooks/useLocalStorage';
-import { type CartItem } from '../types';
+import { cartsSchema } from '~/helpers/validations/cartItemSchema';
+import useLocalStorage from '~/hooks/useLocalStorage';
+import type { CartItem } from '~/types';
 
 interface CartContextValues {
     cartItems: CartItem[];

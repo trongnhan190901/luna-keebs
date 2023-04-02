@@ -21,3 +21,7 @@ export const productQuantityState = atom(1);
 export const productEditState = atom({});
 
 export const storedState = atom([]);
+
+export const deleteProductState = atom(false);
+
+export const cartItemState = atom([]);

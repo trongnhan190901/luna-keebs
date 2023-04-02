@@ -54,12 +54,11 @@ model User {
 model Product {
   id        String    @id @default(auto()) @map("_id") @db.ObjectId
   title     String
-  type      String
-  categoryName  String   @unique
+  categoryName  String   
   category    Category    @relation(fields: [categoryName], references: [name])
   image     String
-  price     Int
-  quantity  Int
+  price     String
+  quantity  String
   spec      String
   desc      String
   slug      String    @unique
@@ -73,7 +72,6 @@ model Category {
   id          String     @id @default(auto()) @map("_id") @db.ObjectId
   name        String    @unique
   image       String
-  description String
   products    Product[]
 }
 
