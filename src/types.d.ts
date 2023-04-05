@@ -44,3 +44,20 @@ export interface ProductCategory {
     title: string;
     href: string;
 }
+
+export interface ProductType extends Product {
+    instructor: User;
+    category: { id: string; name: string };
+    productTargets: {
+        id: string;
+        categoryName: string;
+        slug: string;
+        productId: string;
+    }[];
+    productRequirements: {
+        id: string;
+        categoryName: string;
+        slug: string;
+        productId: string;
+    }[];
+}

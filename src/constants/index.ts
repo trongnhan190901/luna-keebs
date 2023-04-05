@@ -176,6 +176,22 @@ export const SuggestItems = [
     ],
 ];
 
+export const PATHS = {
+    USER: 'user',
+    PRODUCT: 'product',
+    LOGIN: 'login',
+    CREATE_COURSE: 'create',
+    EDIT_COURSE: 'edit',
+    ADMIN: 'admin',
+    CART: 'cart',
+    BROWSE: 'browse',
+    PAYMENT_STATUS: 'payment_status',
+    MY_LEARNING: 'my-learning',
+    INSTRUCTIONS: 'instructions',
+    MY_WALLET: 'my-wallet',
+    MONEY: 'money',
+};
+
 export const LIMIT_SEARCH_INPUT = 50;
 export const PRODUCTS_PER_PAGE = 12;
 export const ITEMS_PER_PAGE = 8;

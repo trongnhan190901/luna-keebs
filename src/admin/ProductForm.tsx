@@ -190,18 +190,16 @@ const ProductForm = ({
 
                             <div className="flex flex-col">
                                 <div className="flex">
-                                    <div className="flex flex-col space-x-5 space-y-5">
+                                    <div className="flex flex-col  space-x-5 space-y-5">
                                         <Input
                                             name="title"
                                             title="Tên sản phẩm"
                                             placeholder="Nhập tên sản phẩm"
                                             required
+                                            className="ml-6"
                                         />
                                         <div className="flex">
-                                            <div
-                                                className="ml-4 h-6 
-                                             px-3 font-primary text-3xl font-bold "
-                                            >
+                                            <div className="h-6 font-primary text-3xl font-bold ">
                                                 Loại sản phẩm
                                             </div>
                                             <p className="ml-1 text-red-400">
@@ -211,7 +209,7 @@ const ProductForm = ({
 
                                         <div className="flex flex-row">
                                             <select
-                                                className="mr-6 h-[40px] w-[180px] rounded-3xl border border-black pl-3 font-primary text-2xl font-bold"
+                                                className="h-[40px] w-[180px] rounded-3xl border border-black pl-3 font-primary text-2xl font-bold"
                                                 name="categoryName"
                                                 id=""
                                             >

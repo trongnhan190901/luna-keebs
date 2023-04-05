@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import '../styles/globals.scss';
 import type { AppProps } from 'next/app';
@@ -25,13 +28,13 @@ function MyApp({
         Component.getLayout ?? ((page) => <MainLayout>{page}</MainLayout>);
 
     return (
-        <Provider>
-            <CartContextProvider>
-                <SessionProvider session={session}>
+        <SessionProvider session={session}>
+            <Provider>
+                <CartContextProvider>
                     {getLayout(<Component {...pageProps} />)}
-                </SessionProvider>
-            </CartContextProvider>
-        </Provider>
+                </CartContextProvider>
+            </Provider>
+        </SessionProvider>
     );
 }
 

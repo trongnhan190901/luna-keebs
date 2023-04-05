@@ -1,12 +1,16 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import { Dialog, Transition } from '@headlessui/react';
 import { useAtom } from 'jotai';
 import { signIn } from 'next-auth/react';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import { Fragment } from 'react';
 import { logInState } from '~/atoms/modalAtom';
 
 const Login = () => {
     const [isOpen, setIsOpen] = useAtom(logInState);
+
+    const router = useRouter();
 
     return (
         <>
@@ -52,7 +56,12 @@ const Login = () => {
                                 <button
                                     onClick={() =>
                                         signIn('google', {
-                                            callbackUrl: '/',
+                                            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+                                            callbackUrl: `${
+                                                router.asPath
+                                                    ? router.asPath
+                                                    : '/'
+                                            }`,
                                         })
                                     }
                                     className="smooth-effect absolute-center mx-auto w-[200px] space-x-2 rounded-3xl border border-gray-700 py-4 px-6 hover:scale-110 hover:bg-yellow-200 md:w-[250px]"

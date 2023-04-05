@@ -8,6 +8,7 @@ import { memo } from 'react';
 import MobileNavigation from './MobileNavigation';
 import { useSession } from 'next-auth/react';
 import UserMenu from './UserMenu';
+import { useCartContext } from '~/providers/CartContextProvider';
 import {
     logInState,
     navbarState,
@@ -25,6 +26,7 @@ const Header = () => {
     const [isSearch, setIsSearch] = useAtom(navbarState);
 
     const { data: session } = useSession();
+    const cartCtx = useCartContext();
 
     return (
         <>
@@ -57,7 +59,8 @@ const Header = () => {
                                     className="h-16 w-16 bg-transparent stroke-white"
                                     onClick={() => setIsCartOpen(!isCartOpen)}
                                 />
-                                <div className="absolute top-1/2 left-1/2 -z-10 mt-6 h-full -translate-x-1/2 -translate-y-1/2 font-secondary text-3xl text-white">
+                                <div className="absolute top-1/2 left-1/2 -z-10 mt-7 h-full -translate-x-1/2 -translate-y-1/2 font-secondary text-2xl text-white">
+                                    {cartCtx?.userWithCart?.cart.length}
                                     <ShoppingCart />
                                 </div>
                             </div>

@@ -1,20 +1,18 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Dialog, Transition } from '@headlessui/react';
 import { useAtom } from 'jotai';
-import { Fragment } from 'react';
+import { Fragment, Key } from 'react';
 import { shoppingCartState } from '~/atoms/modalAtom';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { useCartContext } from '~/providers/CartContextProvider';
 import ShoppingCartItem from './ShoppingCartItem';
+import { ProductType } from '~/types';
 
 const ShoppingCart = () => {
     const [isOpen, setIsOpen] = useAtom(shoppingCartState);
+    const cartCtx = useCartContext();
 
-    const { cartItems } = useCartContext();
-
-    const totalPrice = () => {
-        const total = 0;
-    };
+    console.log(cartCtx?.userWithCart?.cart.length);
 
     return (
         <>
@@ -51,42 +49,30 @@ const ShoppingCart = () => {
                                     </div>
                                 </div>
 
-                                {cartItems.map((item, index) => {
-                                    return (
-                                        <ShoppingCartItem
-                                            index={index}
-                                            key={index}
-                                            product={item}
-                                        />
-                                    );
-                                })}
+                                <div className="absolute-center flex-col">
+                                    {cartCtx?.userWithCart &&
+                                        cartCtx?.userWithCart.cart &&
+                                        cartCtx?.userWithCart.cart.length > 0 &&
+                                        cartCtx?.userWithCart.cart.map(
+                                            (item) => {
+                                                return (
+                                                    <ShoppingCartItem
+                                                        key={item.id}
+                                                        cartId={item.id}
+                                                        product={item.product}
+                                                        productId={
+                                                            item.productId
+                                                        }
+                                                        cartQuantity={
+                                                            item.cartQuantity
+                                                        }
+                                                    />
+                                                );
+                                            },
+                                        )}
+                                </div>
 
-                                <div className="absolute bottom-0 h-[300px] w-full border-t bg-gray-100">
-                                    <div className="absolute-center mx-2 h-36 w-full flex-col">
-                                        <div className="absolute-center flex-row">
-                                            <input
-                                                type="text"
-                                                placeholder="Mã giảm giá"
-                                                className="h-20 w-[300px] rounded-lg border-2 px-6 font-secondary text-2xl font-bold  focus:outline-none"
-                                            />
-                                            <button
-                                                onClick={totalPrice}
-                                                className="mx-2 h-20 w-[90px] rounded-lg bg-gray-600 font-secondary
-                                     text-2xl font-bold text-white hover:scale-105 hover:bg-black"
-                                            >
-                                                Sử dụng
-                                            </button>
-                                        </div>
-
-                                        {/* <div className="mt-3 flex w-full flex-col px-28">
-                                        <span className="font-primary text-xl text-red-600">
-                                            * Mã không đúng
-                                        </span>
-                                        <span className="font-primary text-xl text-green-600">
-                                            * Dùng mã thành công
-                                        </span>
-                                    </div> */}
-                                    </div>
+                                <div className="absolute bottom-0 h-[200px] w-full border-t bg-gray-100">
                                     <div className="mb-8 mt-12 flex">
                                         <div className="ml-20 flex w-full font-primary text-3xl font-bold">
                                             Tạm tính
