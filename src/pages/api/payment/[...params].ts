@@ -1,10 +1,11 @@
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
+/* eslint-disable @typescript-eslint/restrict-plus-operands */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable @typescript-eslint/restrict-plus-operands */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 import dateFormat from 'dateformat';
 import { nanoid } from 'nanoid';
 import { PATHS } from '~/constants';
@@ -16,6 +17,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 const payment = async (req: NextApiRequest, res: NextApiResponse) => {
     const { method, query } = req;
     const { params } = query;
+    console.log(req.body);
 
     const VNPAY_CONFIGS = JSON.parse(String(process.env.VNPAY_CONFIGS));
 
@@ -32,9 +34,10 @@ const payment = async (req: NextApiRequest, res: NextApiResponse) => {
 
     try {
         if (method === 'POST' && params[0] === 'create') {
-            const { productIds } = req.body;
+            const { cartItem } = req.body;
             const { userId } = req.body;
             const orderInfo = req.body.orderDescription;
+            const totalAmount = req.body.amount;
 
             if (!orderInfo) {
                 return res
@@ -46,21 +49,29 @@ const payment = async (req: NextApiRequest, res: NextApiResponse) => {
                 return res.status(400).json({ message: 'userId is required' });
             }
 
-            if (!productIds && !Array.isArray(productIds)) {
+            if (!cartItem && !Array.isArray(cartItem)) {
                 return res
                     .status(400)
-                    .json({ message: 'courses id are required' });
+                    .json({ message: 'cart item are required' });
             }
 
             await db.user.update({
                 where: { id: userId },
                 data: {
                     payments: {
-                        create: productIds.map((productId: any) => ({
+                        create: {
                             status: 'PENDING',
-                            course: { connect: { id: productId } },
                             paymentGId: orderInfo,
-                        })),
+                            totalAmount: totalAmount,
+                            paymentDetails: {
+                                create: cartItem.map((item) => ({
+                                    product: {
+                                        connect: { id: item.productId },
+                                    },
+                                    cartQuantity: item.cartQuantity,
+                                })),
+                            },
+                        },
                     },
                 },
             });
@@ -69,7 +80,10 @@ const payment = async (req: NextApiRequest, res: NextApiResponse) => {
             // https://sandbox.vnpayment.vn/apis/docs/huong-dan-tich-hop
 
             const ipAddr =
-                req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+                req.headers['x-forwarded-for'] ||
+                req.connection.remoteAddress ||
+                req.socket.remoteAddress ||
+                req.connection.socket.remoteAddress;
 
             const tmnCode = VNPAY_CONFIGS['vnp_TmnCode'];
             const secretKey = VNPAY_CONFIGS['vnp_HashSecret'];
@@ -93,7 +107,7 @@ const payment = async (req: NextApiRequest, res: NextApiResponse) => {
             vnp_Params['vnp_Version'] = '2.1.0';
             vnp_Params['vnp_Command'] = 'pay';
             vnp_Params['vnp_TmnCode'] = tmnCode;
-            vnp_Params['vnp_Merchant'] = 'Next Edu';
+            vnp_Params['vnp_Merchant'] = 'Luna Keebs';
             vnp_Params['vnp_Locale'] = locale;
             vnp_Params['vnp_CurrCode'] = currCode;
             vnp_Params['vnp_TxnRef'] = orderId;
@@ -136,15 +150,9 @@ const payment = async (req: NextApiRequest, res: NextApiResponse) => {
             const amount = Number(vnp_Params['vnp_Amount']);
             const orderInfo = vnp_Params['vnp_OrderInfo']; // -> paymentGId
 
-            // console.log('orderInfo:: ', { orderId, orderInfo, amount });
+            console.log('orderInfo:: ', { orderId, orderInfo, amount });
 
             if (vnpStatus === '00') {
-                /* this function handle:
-          update status payment table to "SUCCESS"
-          delete all record of cart table
-          enroll course
-          incremental revenue amount
-        */
                 await handlePaymentSuccess({
                     paymentGId: orderInfo,
                     amount,

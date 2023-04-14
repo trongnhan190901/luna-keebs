@@ -1,8 +1,12 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable indent */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { z } from 'zod';
 import { userProcedure } from '../procedures';
 import { router } from '../trpc';
+import { createAddressInputSchema } from '~/helpers/validations/userRoutesSchema';
 
 export const userRouter = router({
     profile: userProcedure.query(async ({ ctx }) => {
@@ -14,7 +18,12 @@ export const userRouter = router({
         });
     }),
     addProductToCart: userProcedure
-        .input(z.object({ productId: z.string(), cartQuantity: z.number() }))
+        .input(
+            z.object({
+                productId: z.string(),
+                cartQuantity: z.number(),
+            }),
+        )
         .mutation(async ({ ctx, input }) => {
             const { productId, cartQuantity } = input;
 
@@ -70,5 +79,34 @@ export const userRouter = router({
             });
 
             return user;
+        }),
+    findPayments: userProcedure
+        .input(z.object({ includeProduct: z.boolean() }))
+        .query(async ({ ctx, input }) => {
+            const { includeProduct } = input;
+
+            const payments = ctx.prisma.payment.findMany({
+                where: { userId: ctx.session.user.id, status: 'SUCCESS' },
+                select: {
+                    updatedAt: true,
+                    totalAmount: true,
+                    paymentDetails: {
+                        include: {
+                            product: includeProduct
+                                ? {
+                                      select: {
+                                          slug: true,
+                                          image: true,
+                                          title: true,
+                                          price: true,
+                                      },
+                                  }
+                                : includeProduct,
+                        },
+                    },
+                },
+            });
+
+            return payments;
         }),
 });

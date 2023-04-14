@@ -50,37 +50,36 @@ model User {
   role          Role      @default(User)
   payments      Payment[]
   cart          Cart[]
-  revenue       Revenue[]
+  ticket        Ticket[]
 }
 
 model Product {
-  id        String    @id @default(auto()) @map("_id") @db.ObjectId
-  title     String
-  categoryName  String   
-  category    Category    @relation(fields: [categoryName], references: [name])
-  image     String
-  price     String
-  quantity  Int
-  spec      String
-  desc      String
-  slug      String    @unique
-  createdAt DateTime  @default(now())
-  updatedAt DateTime?
-  deleted     Boolean     @default(false)
-  cart        Cart[]
-  payments    Payment[]
+  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  title         String
+  categoryName  String
+  category      Category        @relation(fields: [categoryName], references: [name])
+  image         String
+  price         String
+  quantity      String
+  spec          String
+  desc          String
+  slug          String          @unique
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime?
+  deleted       Boolean         @default(false)
+  cart          Cart[]
+  PaymentDetail PaymentDetail[]
+  Ticket        Ticket[]
 
   @@index([categoryName])
-
 }
 
 model Category {
-  id          String     @id @default(auto()) @map("_id") @db.ObjectId
-  name        String    @unique
-  image       String
-  products    Product[]
+  id       String    @id @default(auto()) @map("_id") @db.ObjectId
+  name     String    @unique
+  image    String
+  products Product[]
 }
-
 
 enum PAYMENT_STATUS {
   PENDING
@@ -88,46 +87,43 @@ enum PAYMENT_STATUS {
   ERROR
 }
 
-model Revenue {
-  id        String    @id @default(auto()) @map("_id") @db.ObjectId
-  amount    BigInt
-  user      User      @relation(fields: [userId], references: [id])
-  payments  Payment[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  userId    String    @db.ObjectId
+model Payment {
+  id             String          @id @default(auto()) @map("_id") @db.ObjectId
+  paymentGId     String
+  orderId        String?
+  status         PAYMENT_STATUS
+  user           User            @relation(fields: [userId], references: [id])
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  userId         String          @db.ObjectId
+  paymentDetails PaymentDetail[]
+
+  totalAmount BigInt
 
   @@index([userId])
 }
 
-model Payment {
-  id         String         @id @default(auto()) @map("_id") @db.ObjectId
-  paymentGId String
-  orderId    String?
-  status     PAYMENT_STATUS
-  user       User           @relation(fields: [userId], references: [id])
-  product     Product        @relation(fields: [productId], references: [id])
-  productId   String        @db.ObjectId
-  createdAt  DateTime       @default(now())
-  updatedAt  DateTime       @updatedAt
-  userId     String         @db.ObjectId
-  Revenue    Revenue?       @relation(fields: [revenueId], references: [id])
-  revenueId  String?       @db.ObjectId
+model PaymentDetail {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  cartQuantity Int
+  product      Product  @relation(fields: [productId], references: [id])
+  productId    String   @db.ObjectId
+  payment      Payment? @relation(fields: [paymentId], references: [id])
+  paymentId    String?  @db.ObjectId
 
+  @@index([paymentId])
   @@index([productId])
-  @@index([userId])
-  @@index([revenueId])
 }
 
 model Cart {
-  id        String    @id @default(auto()) @map("_id") @db.ObjectId
-  user      User     @relation(fields: [userId], references: [id])
-  product    Product   @relation(fields: [productId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  productId  String @db.ObjectId
-  userId    String  @db.ObjectId
-  cartQuantity  Int
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  user         User     @relation(fields: [userId], references: [id])
+  product      Product  @relation(fields: [productId], references: [id])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  productId    String   @db.ObjectId
+  userId       String   @db.ObjectId
+  cartQuantity Int
 
   @@index([productId])
   @@index([userId])

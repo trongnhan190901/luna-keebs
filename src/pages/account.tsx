@@ -1,15 +1,22 @@
 import { useAtom } from 'jotai';
 import type { GetServerSideProps, NextPage } from 'next';
 import { getSession, useSession } from 'next-auth/react';
-import { newAddressState, logInState } from '~/atoms/modalAtom';
+import { logInState } from '~/atoms/modalAtom';
 import Login from '~/components/partials/Login';
-import AddNewAddress from '~/components/partials/AddNewAddress';
+import Loader from '~/components/shared/Loader';
+import PaymentCard from '~/components/shared/PaymentCard';
+import PaymentCardItem from '~/components/shared/PaymentCardItem';
+import { api } from '~/utils/api';
 
 const Account: NextPage = () => {
     const { data: session, status } = useSession();
 
-    const [newAddressOpen, setNewAddressOpen] = useAtom(newAddressState);
     const [isLogin, setIsLogin] = useAtom(logInState);
+
+    const { data: payments, status: loadStatus } =
+        api.user.findPayments.useQuery({
+            includeProduct: true,
+        });
 
     if (status === 'authenticated') {
         return (
@@ -37,23 +44,46 @@ const Account: NextPage = () => {
                                 {session?.user?.name}
                             </span>
                         </div>
-                        <div className="full-size flex flex-col px-10">
-                            <div className="flex h-32 items-center  font-secondary text-3xl font-bold">
-                                Sổ địa chỉ
-                            </div>
-                            <button
-                                onClick={() =>
-                                    setNewAddressOpen(!newAddressOpen)
-                                }
-                                className="absolute-center h-20 w-64 rounded-3xl border-2 border-black hover:bg-black hover:text-white"
-                            >
-                                <span className="absolute-center mx-2 font-secondary text-3xl font-bold">
-                                    Thêm địa chỉ
-                                </span>
-                                <AddNewAddress />
-                            </button>
-                        </div>
                     </div>
+                    <h2 className="mx-10 flex h-36 w-full items-center font-secondary text-5xl font-bold">
+                        Lịch sử đơn hàng
+                    </h2>
+                    {loadStatus === 'loading' ? (
+                        <div className="absolute-center min-h-[10rem] w-full">
+                            <Loader />
+                        </div>
+                    ) : (
+                        <ul className="flex flex-col space-y-4">
+                            {payments && payments.length > 0 ? (
+                                payments.map((payment, index) => {
+                                    return (
+                                        <PaymentCard
+                                            key={index}
+                                            payment={payment}
+                                        >
+                                            {payment.paymentDetails.map(
+                                                (detail, index) => {
+                                                    return (
+                                                        <PaymentCardItem
+                                                            key={index}
+                                                            product={
+                                                                detail.product
+                                                            }
+                                                            cartQuantity={
+                                                                detail.cartQuantity
+                                                            }
+                                                        />
+                                                    );
+                                                },
+                                            )}
+                                        </PaymentCard>
+                                    );
+                                })
+                            ) : (
+                                <li>Bạn chưa thanh toán khoá học nào</li>
+                            )}
+                        </ul>
+                    )}
                 </div>
             </>
         );

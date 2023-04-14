@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
 import Link from 'next/link';
-import Image from 'next/image';
+import { priceFormat } from '~/helpers/priceFormat';
 
 interface ProductCardProps {
     product: {
@@ -18,9 +18,9 @@ const ProductCard = ({ product }: ProductCardProps) => {
             <Link href={`/product/${product.slug}`}>
                 <div className="smooth-effect mx-6 h-[280px] w-[150px] rounded-3xl pt-5 transition ease-in-out hover:-translate-y-1 hover:scale-105 md:h-[310px] md:w-[220px] lg:h-[400px] lg:w-[250px] 2xl:w-[290px]">
                     <img
-                        src={`https://${product.image}`}
                         className="z-0 h-[150px] w-[150px] rounded-3xl bg-contain object-cover md:h-[180px] md:w-[220px] lg:h-[260px] lg:w-[290px]"
                         alt=""
+                        src={`https://${product.image}`}
                     />
 
                     <div className="absolute-center mt-4 flex w-full flex-col px-6 text-center font-tertiary">
@@ -28,7 +28,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
                             {product.title}
                         </h2>
                         <span className="mt-2 font-primary text-3xl leading-tight">
-                            ₫ {product.price}
+                            {priceFormat(parseInt(product?.price))}
                         </span>
                     </div>
                 </div>

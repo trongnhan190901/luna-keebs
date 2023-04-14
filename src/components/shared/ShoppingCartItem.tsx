@@ -12,8 +12,10 @@ import type { ProductType } from '~/types';
 import { memo, useEffect, useState } from 'react';
 import { useAtom } from 'jotai';
 import { shoppingCartState } from '~/atoms/modalAtom';
+import RemoveButton from '../buttons/RemoveButton';
+import { priceFormat } from '~/helpers/priceFormat';
 
-interface CartItemProps {
+interface ShoppingCartItemProps {
     product: ProductType;
     cartId: string;
     productId: string;
@@ -25,17 +27,12 @@ const ShoppingCartItem = ({
     cartId,
     productId,
     cartQuantity,
-}: CartItemProps) => {
+}: ShoppingCartItemProps) => {
     const [isOpen, setIsOpen] = useAtom(shoppingCartState);
 
-    const { mutate: deleteCourseFromCart, status } =
-        api.user.deleteCourseFromCart.useMutation();
-
-    const productTotalPrice = parseInt(product.price) * cartQuantity;
-
-    const handleDeleteCart = () => {
-        deleteCourseFromCart({ cartId });
-    };
+    const productTotalPrice = priceFormat(
+        parseInt(product.price) * cartQuantity,
+    );
 
     return (
         <>
@@ -58,11 +55,8 @@ const ShoppingCartItem = ({
                                 </h2>
                             </Link>
 
-                            <div
-                                className="flex w-full justify-end"
-                                onClick={() => handleDeleteCart()}
-                            >
-                                <XMarkIcon className="smooth-effect h-10 w-10 stroke-gray-400 hover:scale-105 hover:stroke-black" />
+                            <div className="flex w-full justify-end">
+                                <RemoveButton cartId={cartId} />
                             </div>
                         </div>
                         <p className="mt-3 text-2xl">
@@ -73,7 +67,7 @@ const ShoppingCartItem = ({
                                 Số lượng: {cartQuantity}
                             </div>
                             <div className="flex w-full items-center justify-end font-secondary text-[1.7rem] font-bold">
-                                Tổng: {productTotalPrice} ₫
+                                Tổng: {productTotalPrice}
                             </div>
                         </div>
                     </div>

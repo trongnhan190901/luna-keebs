@@ -27,6 +27,7 @@ import Image from 'next/image';
 import DeleteProduct from './DeleteProduct';
 import type { inferProcedureInput } from '@trpc/server';
 import type { AppRouter } from '~/server/api/root';
+import { toast } from 'react-hot-toast';
 
 interface AddNewProductProps {
     type: 'add' | 'edit';
@@ -74,26 +75,6 @@ const ProductForm = ({
 
     const { setValue, getValues } = useForm<CreateProductsInput>({});
 
-    //     handleSubmit(async (data) => {
-    //         switch (type) {
-    //             case 'add':
-    //                 console.log(data);
-
-    //                 return await saveNewProduct(data);
-
-    //             case 'edit':
-    //                 console.log(data);
-    //                 return await updateProduct({
-    //                     ...data,
-    //                     id: initialData?.id || '',
-    //                 });
-
-    //             default:
-    //                 console.log(data);
-    //                 return;
-    //         }
-    //     })();
-    // };
     const changeImageState = () => {
         if (changeImage) {
             setFile(null);
@@ -158,8 +139,12 @@ const ProductForm = ({
                                 case 'add':
                                     try {
                                         await addProduct.mutateAsync(input);
+                                        toast.success(
+                                            'Thêm sản phẩm thành công',
+                                        );
                                         $form.reset();
                                     } catch (cause) {
+                                        toast.error('Thêm sản phẩm thất bại');
                                         console.error(
                                             { cause },
                                             'Failed to add product',

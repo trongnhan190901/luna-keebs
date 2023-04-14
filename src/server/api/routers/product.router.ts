@@ -62,24 +62,20 @@ export const productRouter = router({
                 nextCursor,
             };
         }),
-    search: publicProcedure
-        .input(searchProductsSchema)
+    findProductBySearch: publicProcedure
+        .input(z.object({ title: z.string(), limit: z.number().optional() }))
         .query(async ({ ctx, input }) => {
-            const { search, page } = input;
-            if (!search) return [];
-            return getProductsBySearch(
-                search,
-                PRODUCTS_PER_PAGE,
-                (page - 1) * PRODUCTS_PER_PAGE,
-                ctx.prisma,
-            );
+            const { title, limit } = input;
+
+            const products = await ctx.prisma.product.findRaw({
+                filter: { title: { $regex: `^${title}`, $options: 'i' } },
+            });
+            return products;
         }),
+
     carts: publicProcedure
         .input(getCartProductsInputSchema)
         .query(async ({ ctx, input }) => {
             return getCartProducts(input, ctx.prisma);
         }),
 });
-
-type ProductRouterOutput = inferRouterOutputs<typeof productRouter>;
-// export type GetProduct = ProductRouterOutput['get'];

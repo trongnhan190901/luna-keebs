@@ -1,13 +1,14 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @next/next/no-img-element */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useCartContext } from '~/providers/CartContextProvider';
-import ProductQuantity from './ProductQuantity';
 import type { Product } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import { useAtom } from 'jotai';
 import { logInState } from '~/atoms/modalAtom';
 import Login from '../partials/Login';
+import { MinusIcon, PlusIcon } from '@heroicons/react/24/outline';
+import { priceFormat } from '~/helpers/priceFormat';
 
 interface ProductHeaderProps {
     product: Product;
@@ -19,10 +20,6 @@ const ProductHeader = ({ product }: ProductHeaderProps) => {
     const [isLogin, setIsLogin] = useAtom(logInState);
     const cartCtx = useCartContext();
 
-    const getData = (data: number) => {
-        setCount(data);
-    };
-
     const handleAddToCart = () => {
         if (sessionStatus === 'unauthenticated') {
             setIsLogin(!isLogin);
@@ -32,6 +29,35 @@ const ProductHeader = ({ product }: ProductHeaderProps) => {
 
         cartCtx?.addProductToCart(product.id, count);
     };
+
+    const [disablePlus, setDisablePlus] = useState(false);
+    const [disableMinus, setDisableMinus] = useState(false);
+
+    const inc = () => {
+        setDisablePlus(false);
+        setCount(count + 1);
+    };
+
+    const dec = () => {
+        setDisableMinus(false);
+        setCount(count - 1);
+    };
+
+    useEffect(() => {
+        if (count === 1) {
+            setDisableMinus(true);
+        } else {
+            setDisableMinus(false);
+        }
+
+        if (count === parseInt(product.quantity)) {
+            setDisablePlus(true);
+        } else {
+            setDisablePlus(false);
+        }
+
+        setCount(count);
+    }, [count, product.quantity]);
 
     return (
         <>
@@ -52,16 +78,40 @@ const ProductHeader = ({ product }: ProductHeaderProps) => {
                         {product?.title}
                     </h1>
                     <div className="ml-12 mt-12 mb-20 font-primary text-4xl font-bold text-teal-500">
-                        ₫ {product?.price}
+                        {priceFormat(parseInt(product?.price))}
                     </div>
 
                     <div className="mb-2 font-secondary text-3xl font-medium text-gray-900">
                         Số lượng
                     </div>
                     <div className="my-4 flex w-full items-center justify-start">
-                        <ProductQuantity sendData={getData} />
-                    </div>
+                        <div className="flex w-full items-center justify-start">
+                            <button
+                                onClick={dec}
+                                disabled={disableMinus}
+                                className="absolute-center group h-12 w-12 cursor-pointer rounded-tl-lg rounded-bl-lg border bg-white hover:bg-gray-700 disabled:cursor-not-allowed disabled:bg-gray-300"
+                            >
+                                <MinusIcon className="h-7 w-7 group-hover:stroke-white" />
+                            </button>
 
+                            <input
+                                type="number"
+                                className="absolute-center h-12 w-20 border text-center font-primary text-[1.7rem] font-bold"
+                                value={count}
+                            />
+
+                            <button
+                                onClick={inc}
+                                disabled={disablePlus}
+                                className="absolute-center group h-12 w-12 cursor-pointer rounded-tr-lg rounded-br-lg border bg-white hover:bg-gray-700 disabled:cursor-not-allowed disabled:bg-gray-300"
+                            >
+                                <PlusIcon className="h-7 w-7 group-hover:stroke-white" />
+                            </button>
+                        </div>
+                    </div>
+                    <div className="font-secondary text-2xl">
+                        Số lượng còn lại: {product.quantity}
+                    </div>
                     <button
                         onClick={() => handleAddToCart()}
                         className="absolute-center my-8 h-20 w-96 overflow-hidden rounded-xl border-2 border-black font-secondary text-3xl font-medium text-black hover:bg-black hover:text-white"

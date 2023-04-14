@@ -22,9 +22,9 @@ const NewArrival = () => {
     );
 
     useEffect(() => {
-        const allPosts =
+        const productsArray =
             getAllProductQuery.data?.pages.flatMap((page) => page.items) ?? [];
-        for (const { id } of allPosts) {
+        for (const { id } of productsArray) {
             void utils.product.getProduct.prefetch({ id });
         }
     }, [getAllProductQuery.data, utils]);

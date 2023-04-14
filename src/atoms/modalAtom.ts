@@ -10,6 +10,8 @@ export const addProductState = atom(false);
 
 export const editProductState = atom(false);
 
+export const searchProductState = atom(false);
+
 export const ProductState = atom(false);
 
 export const shoppingCartState = atom(false);
@@ -25,3 +27,5 @@ export const storedState = atom([]);
 export const deleteProductState = atom(false);
 
 export const cartItemState = atom([]);
+
+export const deleteCartItemState = atom('error');

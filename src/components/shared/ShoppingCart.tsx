@@ -1,18 +1,17 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Dialog, Transition } from '@headlessui/react';
 import { useAtom } from 'jotai';
-import { Fragment, Key } from 'react';
+import { Fragment } from 'react';
 import { shoppingCartState } from '~/atoms/modalAtom';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { useCartContext } from '~/providers/CartContextProvider';
 import ShoppingCartItem from './ShoppingCartItem';
-import { ProductType } from '~/types';
+import Link from 'next/link';
+import { priceFormat } from '~/helpers/priceFormat';
 
 const ShoppingCart = () => {
     const [isOpen, setIsOpen] = useAtom(shoppingCartState);
     const cartCtx = useCartContext();
-
-    console.log(cartCtx?.userWithCart?.cart.length);
 
     return (
         <>
@@ -78,18 +77,21 @@ const ShoppingCart = () => {
                                             Tạm tính
                                         </div>
                                         <div className="mr-20 flex w-full justify-end font-primary text-3xl font-bold">
-                                            ₫
+                                            {priceFormat(
+                                                cartCtx?.totalAmount,
+                                            ) || 0}{' '}
                                         </div>
                                     </div>
 
                                     <div className="absolute-center flex-col">
-                                        <div className="font-secondary text-2xl uppercase text-gray-600">
-                                            Phí vận chuyển được tính khi thanh
-                                            toán
-                                        </div>
-                                        <button className="absolute-center smooth-effect mt-4 h-[5.5rem] w-[300px] rounded-lg bg-gray-600 font-secondary text-2xl font-bold text-white hover:scale-105 hover:bg-black">
-                                            Thanh toán
-                                        </button>
+                                        <Link
+                                            onClick={() => setIsOpen(!isOpen)}
+                                            href={'/cart'}
+                                        >
+                                            <button className="absolute-center smooth-effect mt-4 h-[5.5rem] w-[300px] rounded-lg bg-gray-600 font-secondary text-2xl font-bold text-white hover:scale-105 hover:bg-black">
+                                                Thanh toán
+                                            </button>
+                                        </Link>
                                     </div>
 
                                     <div

@@ -2,8 +2,11 @@ import Logo from '~/components/icons/Logo';
 import Link from 'next/link';
 import DesktopNavigation from '~/components/partials/DesktopNavigation';
 import Login from '~/components/partials/Login';
-import SearchBar from '~/components/partials/SearchBar';
-import { ShoppingBagIcon, UserCircleIcon } from '@heroicons/react/24/outline';
+import {
+    MagnifyingGlassIcon,
+    ShoppingBagIcon,
+    UserCircleIcon,
+} from '@heroicons/react/24/outline';
 import { memo } from 'react';
 import MobileNavigation from './MobileNavigation';
 import { useSession } from 'next-auth/react';
@@ -12,18 +15,20 @@ import { useCartContext } from '~/providers/CartContextProvider';
 import {
     logInState,
     navbarState,
+    searchProductState,
     shoppingCartState,
     userMenuState,
 } from '~/atoms/modalAtom';
 import { useAtom } from 'jotai';
 import ShoppingCart from '../shared/ShoppingCart';
+import SearchModal from '../shared/SearchModal';
 // import useShoppingCart from '~/context/ShoppingCartContext';
 
 const Header = () => {
     const [isLogin, setIsLogin] = useAtom(logInState);
     const [isOpen, setIsOpen] = useAtom(userMenuState);
     const [isCartOpen, setIsCartOpen] = useAtom(shoppingCartState);
-    const [isSearch, setIsSearch] = useAtom(navbarState);
+    const [isSearch, setIsSearch] = useAtom(searchProductState);
 
     const { data: session } = useSession();
     const cartCtx = useCartContext();
@@ -48,8 +53,13 @@ const Header = () => {
                                 <DesktopNavigation />
                             </div>
 
-                            <div className="md:absolute-center smooth-effect mr-6 hidden cursor-pointer transition ease-in-out hover:-translate-y-1 hover:scale-110 lg:mx-6">
-                                <SearchBar />
+                            <div
+                                onClick={() => setIsSearch(!isSearch)}
+                                className="md:absolute-center  smooth-effect relative z-10 hidden cursor-pointer stroke-white transition ease-in-out hover:-translate-y-1 hover:scale-110 lg:mx-6"
+                            >
+                                <MagnifyingGlassIcon className="inset-y-0 h-16 w-16 border-r border-transparent stroke-white" />
+
+                                <SearchModal />
                             </div>
 
                             {/* Carts */}
