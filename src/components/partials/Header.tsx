@@ -1,7 +1,7 @@
 import Logo from '~/components/icons/Logo';
 import Link from 'next/link';
 import DesktopNavigation from '~/components/partials/DesktopNavigation';
-import Login from '~/components/partials/Login';
+import Login from '~/components/modal/Login';
 import {
     MagnifyingGlassIcon,
     ShoppingBagIcon,
@@ -10,7 +10,7 @@ import {
 import { memo } from 'react';
 import MobileNavigation from './MobileNavigation';
 import { useSession } from 'next-auth/react';
-import UserMenu from './UserMenu';
+import UserMenu from '../modal/UserMenu';
 import { useCartContext } from '~/providers/CartContextProvider';
 import {
     logInState,
@@ -20,8 +20,8 @@ import {
     userMenuState,
 } from '~/atoms/modalAtom';
 import { useAtom } from 'jotai';
-import ShoppingCart from '../shared/ShoppingCart';
-import SearchModal from '../shared/SearchModal';
+import ShoppingCart from '../modal/ShoppingCart';
+import SearchModal from '../modal/SearchModal';
 // import useShoppingCart from '~/context/ShoppingCartContext';
 
 const Header = () => {

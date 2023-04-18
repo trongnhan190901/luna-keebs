@@ -3,7 +3,7 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { useRouter } from 'next/router';
 import { searchProductState } from '~/atoms/modalAtom';
-import { ChangeEvent, Fragment, useEffect, useState } from 'react';
+import { type ChangeEvent, Fragment, useEffect, useState } from 'react';
 import { useAtom } from 'jotai';
 import Image from 'next/image';
 import Link from 'next/link';

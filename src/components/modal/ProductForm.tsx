@@ -12,22 +12,18 @@ import { Fragment } from 'react';
 import { addProductState } from '~/atoms/modalAtom';
 import { useForm } from 'react-hook-form';
 import type { FullProductClient } from '~/types';
-import { zodResolver } from '@hookform/resolvers/zod';
-import {
-    type CreateProductsInput,
-    createProductInputSchema,
-} from '~/helpers/validations/productRoutesSchema';
 import { api } from '~/utils/api';
 import useUploadImage from '~/hooks/useUploadImage';
-import { useState } from 'react';
 import cn from '~/helpers/cn';
 import Input from '~/components/shared/Input';
 import Button from '~/components/buttons/Button';
 import Image from 'next/image';
-import DeleteProduct from './DeleteProduct';
+import DeleteProduct from '../../admin/DeleteProduct';
 import type { inferProcedureInput } from '@trpc/server';
 import type { AppRouter } from '~/server/api/root';
 import { toast } from 'react-hot-toast';
+import { useState } from 'react';
+import { CreateProductsInput } from '~/helpers/validations/productRoutesSchema';
 
 interface AddNewProductProps {
     type: 'add' | 'edit';
@@ -45,7 +41,7 @@ const ProductForm = ({
 
     const utils = api.useContext();
 
-    const { data: categoryList } = api.admin.getCategoryList.useQuery(
+    const { data: categoryList, refetch } = api.admin.getCategoryList.useQuery(
         undefined,
         {
             refetchOnWindowFocus: false,
@@ -143,6 +139,7 @@ const ProductForm = ({
                                             'Thêm sản phẩm thành công',
                                         );
                                         $form.reset();
+                                        refetch();
                                     } catch (cause) {
                                         toast.error('Thêm sản phẩm thất bại');
                                         console.error(

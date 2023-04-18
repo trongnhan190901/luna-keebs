@@ -1,20 +1,16 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable indent */
 
 import type { NextPage } from 'next';
-import ProductForm from '~/admin/ProductForm';
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/router';
+import ProductForm from '~/components/modal/ProductForm';
 import { api } from '~/utils/api';
-import { ITEMS_PER_PAGE } from '~/constants';
-import usePaginatedRef from '~/hooks/usePaginatedRef';
-import ProductCard from '~/components/shared/ProductCard';
-import { Fragment } from 'react';
+import { Fragment, useRef, useState } from 'react';
 import { addProductState } from '~/atoms/modalAtom';
 import { useAtom } from 'jotai';
-import Loader from '~/components/shared/Loader';
+import AdminTicket from '~/components/shared/AdminTicket';
 // import AdminNavbar from '~/admin/Navbar';
 
 enum Sort {
@@ -56,10 +52,18 @@ const Admin: NextPage = () => {
     // if (isLoading) {
     //     return <Loader />;
     // }
+    const [editable, setEditable] = useState(false);
+    const utils = api.useContext();
+    const editorRef = useRef(null);
+
+    const { data: allPayment, status: paymentStatus } =
+        api.admin.findAllPayment.useQuery({
+            includeProduct: true,
+        });
 
     return (
         <>
-            <div className="full-size flex">
+            <div className="full-size flex flex-col">
                 <div className="flex ">{/* <AdminNavbar /> */}</div>
                 <div className="full-size absolute-center flex-col">
                     <div className="absolute-center my-4 mt-28 font-secondary text-7xl font-bold">
@@ -90,6 +94,12 @@ const Admin: NextPage = () => {
                             <ProductForm type="add" />
                         </button>
                     </div>
+                </div>
+                <div className="full-size absolute-center flex-col">
+                    <div className="absolute-center my-4 mt-28 font-secondary text-7xl font-bold">
+                        Phiếu hỗ trợ
+                    </div>
+                    <AdminTicket />
                 </div>
             </div>
         </>

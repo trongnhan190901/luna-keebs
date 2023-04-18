@@ -16,6 +16,8 @@ export const ProductState = atom(false);
 
 export const shoppingCartState = atom(false);
 
+export const ticketState = atom(false);
+
 export const navbarState = atom(true);
 
 export const productQuantityState = atom(1);

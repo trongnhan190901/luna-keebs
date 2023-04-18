@@ -4,14 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
-import type { inferRouterOutputs } from '@trpc/server';
 import { z } from 'zod';
-import { PRODUCTS_PER_PAGE } from '~/constants';
-import { getCartProductsInputSchema } from '~/helpers/validations/productRoutesSchema';
-import { fetchProductById } from '~/server/handlers/products/fetchProductById';
-import { getCartProducts } from '~/server/handlers/products/getCartProducts';
-import { searchProductsSchema } from '~/helpers/validations/productRoutesSchema';
-import { getProductsBySearch } from '~/server/handlers/products/getProductsBySearch';
 import { router, publicProcedure } from '~/server/api/trpc';
 
 export const productRouter = router({
@@ -71,11 +64,5 @@ export const productRouter = router({
                 filter: { title: { $regex: `^${title}`, $options: 'i' } },
             });
             return products;
-        }),
-
-    carts: publicProcedure
-        .input(getCartProductsInputSchema)
-        .query(async ({ ctx, input }) => {
-            return getCartProducts(input, ctx.prisma);
         }),
 });

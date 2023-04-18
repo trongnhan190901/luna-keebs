@@ -6,7 +6,7 @@ import type { Product } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import { useAtom } from 'jotai';
 import { logInState } from '~/atoms/modalAtom';
-import Login from '../partials/Login';
+import Login from '../modal/Login';
 import { MinusIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { priceFormat } from '~/helpers/priceFormat';
 

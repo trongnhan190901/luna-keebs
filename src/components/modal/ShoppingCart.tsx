@@ -5,7 +5,7 @@ import { Fragment } from 'react';
 import { shoppingCartState } from '~/atoms/modalAtom';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { useCartContext } from '~/providers/CartContextProvider';
-import ShoppingCartItem from './ShoppingCartItem';
+import ShoppingCartItem from '../shared/ShoppingCartItem';
 import Link from 'next/link';
 import { priceFormat } from '~/helpers/priceFormat';
 

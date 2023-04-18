@@ -88,6 +88,7 @@ export const userRouter = router({
             const payments = ctx.prisma.payment.findMany({
                 where: { userId: ctx.session.user.id, status: 'SUCCESS' },
                 select: {
+                    id: true,
                     updatedAt: true,
                     totalAmount: true,
                     paymentDetails: {
@@ -95,6 +96,7 @@ export const userRouter = router({
                             product: includeProduct
                                 ? {
                                       select: {
+                                          id: true,
                                           slug: true,
                                           image: true,
                                           title: true,
@@ -108,5 +110,72 @@ export const userRouter = router({
             });
 
             return payments;
+        }),
+    createTicket: userProcedure
+        .input(
+            z.object({
+                issueName: z.string(),
+                desc: z.string(),
+                paymentId: z.string(),
+                productId: z.string(),
+            }),
+        )
+        .mutation(async ({ ctx, input }) => {
+            const { issueName, desc, paymentId, productId } = input;
+
+            const user = await ctx.prisma.user.update({
+                where: { id: ctx.session.user.id },
+                data: {
+                    ticket: {
+                        create: {
+                            payment: { connect: { id: paymentId } },
+                            product: { connect: { id: productId } },
+                            ticketIssue: { connect: { name: issueName } },
+                            desc: desc,
+                        },
+                    },
+                },
+            });
+            return user;
+        }),
+    getTicketIssue: userProcedure.query(async ({ ctx }) => {
+        return await ctx.prisma.ticketIssue.findMany({
+            select: {
+                id: true,
+                name: true,
+            },
+        });
+    }),
+    findTickets: userProcedure
+        .input(
+            z.object({
+                includeProduct: z.boolean(),
+            }),
+        )
+        .query(async ({ ctx, input }) => {
+            const tickets = ctx.prisma.ticket.findMany({
+                where: { userId: ctx.session.user.id },
+                select: {
+                    desc: true,
+                    note: true,
+                    status: true,
+                    createdAt: true,
+                    updatedAt: true,
+                    ticketIssueName: true,
+                    payment: {
+                        select: {
+                            id: true,
+                            updatedAt: true,
+                        },
+                    },
+                    product: {
+                        select: {
+                            id: true,
+                            title: true,
+                        },
+                    },
+                },
+            });
+            return tickets;
         }),
 });
