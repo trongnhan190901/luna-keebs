@@ -1,8 +1,6 @@
-'use client';
-
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
-import { trpc } from '../providers/trpcProvider';
+import { api } from '~/utils/api';
 import { v4 as uuidv4 } from 'uuid';
 
 /**
@@ -22,9 +20,9 @@ const useUploadImage = (
         });
     };
 
-    const { mutate } = trpc.admin.getSignedUrl.useMutation({
+    const { mutate } = api.admin.getSignedUrl.useMutation({
         retry: false,
-        onError: (err) => toast.error(err.message),
+        onError: (err) => console.error(err.message),
         onSuccess: async (url) => {
             try {
                 await upload(url);

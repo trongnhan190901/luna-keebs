@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable indent */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
@@ -5,47 +7,13 @@
 import type { inferRouterOutputs } from '@trpc/server';
 import { z } from 'zod';
 import { createProductInputSchema } from '~/helpers/validations/productRoutesSchema';
-import { paginatedInputSchema } from '~/helpers/validations/userRoutesSchema';
-import { getAllOrders } from '~/server/handlers/admin/getAllOrder';
-import { fetchPaginatedProducts } from '~/server/handlers/products/fetchPaginatedProducts';
 import { getPreSignedUrl } from '~/server/handlers/s3/getPreSignedUrl';
 import { adminProcedure } from '~/server/api/procedures';
 import { router } from '~/server/api/trpc';
 import slugify from 'slugify';
-
-export enum Sort {
-    Desc = 'Desc',
-    Asc = 'Asc',
-    PriceUp = 'PriceUp',
-    PriceDown = 'PriceDown',
-}
+import { TICKET_STATUS } from '@prisma/client';
 
 export const adminRouter = router({
-    getProductsInfo: adminProcedure
-        .input(
-            paginatedInputSchema.extend({
-                sort: z.nativeEnum(Sort),
-            }),
-        )
-        .query(async ({ ctx, input }) => {
-            const { take, cursor, sort } = input;
-            const products = await fetchPaginatedProducts(
-                ctx.prisma,
-                sort,
-                take,
-                cursor,
-            );
-            return {
-                products,
-                cursor: products[take - 1]?.id,
-            };
-        }),
-    getOrdersInfo: adminProcedure
-        .input(paginatedInputSchema)
-        .query(async ({ ctx, input }) => {
-            const { take, cursor } = input;
-            return getAllOrders(take, cursor, ctx.prisma);
-        }),
     getSignedUrl: adminProcedure
         .input(
             z.object({
@@ -53,6 +21,7 @@ export const adminRouter = router({
             }),
         )
         .mutation(async ({ input }) => getPreSignedUrl(input.id)),
+
     getCategoryList: adminProcedure.query(async ({ ctx }) => {
         return await ctx.prisma.category.findMany({
             select: {
@@ -106,11 +75,90 @@ export const adminRouter = router({
                 },
             });
         }),
+    findAllPayment: adminProcedure
+        .input(z.object({ includeProduct: z.boolean() }))
+        .query(async ({ ctx, input }) => {
+            const { includeProduct } = input;
+
+            const payments = ctx.prisma.payment.findMany({
+                select: {
+                    id: true,
+                    updatedAt: true,
+                    totalAmount: true,
+                    status: true,
+                    paymentDetails: {
+                        include: {
+                            product: includeProduct
+                                ? {
+                                      select: {
+                                          id: true,
+                                          slug: true,
+                                          image: true,
+                                          title: true,
+                                          price: true,
+                                      },
+                                  }
+                                : includeProduct,
+                        },
+                    },
+                },
+            });
+
+            return payments;
+        }),
+
+    findAllTicket: adminProcedure.query(async ({ ctx }) => {
+        const allTicket = ctx.prisma.ticket.findMany({
+            select: {
+                id: true,
+                desc: true,
+                note: true,
+                status: true,
+                createdAt: true,
+                updatedAt: true,
+                ticketIssueName: true,
+                payment: {
+                    select: {
+                        id: true,
+                        updatedAt: true,
+                    },
+                },
+                product: {
+                    select: {
+                        id: true,
+                        title: true,
+                    },
+                },
+            },
+        });
+
+        return allTicket;
+    }),
+    updateTicket: adminProcedure
+        .input(
+            z.object({
+                id: z.string(),
+                note: z.string().optional(),
+                status: z.nativeEnum(TICKET_STATUS),
+            }),
+        )
+        .mutation(async ({ ctx, input }) => {
+            const { id, note, status } = input;
+
+            const ticket = await ctx.prisma.ticket.update({
+                where: { id },
+                data: {
+                    updatedAt: new Date(),
+                    note,
+                    status,
+                },
+            });
+
+            return ticket;
+        }),
 });
 
 type AdminRouterOutput = inferRouterOutputs<typeof adminRouter>;
-export type ProductsInfoResponse = AdminRouterOutput['getProductsInfo'];
-export type OrdersInfoResponse = AdminRouterOutput['getOrdersInfo'];
 export type CreateProductResponse = AdminRouterOutput['createProduct'];
 export type UpdateProductResponse = AdminRouterOutput['updateProduct'];
 export type DeleteProductResponse = AdminRouterOutput['deleteProduct'];

@@ -1,7 +1,7 @@
 import Slider from '~/components/shared/Slider';
 import ProductCategory from '~/components/shared/ProductCategory';
 import Suggest from '~/components/shared/Suggest';
-// import NewArrival from '~/components/shared/NewArrival';
+import NewArrival from '~/components/shared/NewArrival';
 import { NextPage } from 'next';
 
 const Home: NextPage = () => {
@@ -12,7 +12,7 @@ const Home: NextPage = () => {
                     <Slider />
                 </div>
                 <div className="absolute-center h-full">
-                    {/* <NewArrival /> */}
+                    <NewArrival />
                 </div>
                 <div className="absolute-center h-full">
                     <ProductCategory />

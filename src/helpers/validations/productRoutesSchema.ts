@@ -18,13 +18,12 @@ export type CartProductsInput = z.infer<typeof getCartProductsInputSchema>;
 
 export const createProductInputSchema = z.object({
     title: z.string().min(5).max(50),
-    image: z.string().min(5).max(500),
+    image: z.string(),
     desc: z.string().max(500),
-    type: z.string(),
     categoryName: z.string(),
-    spec: z.string().min(500),
-    quantity: z.number().min(10),
-    price: z.number().min(100),
+    spec: z.string(),
+    quantity: z.string(),
+    price: z.string(),
 });
 
 export type CreateProductsInput = z.infer<typeof createProductInputSchema>;

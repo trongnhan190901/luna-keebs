@@ -1,5 +1,6 @@
+/* eslint-disable @next/next/no-img-element */
 import Link from 'next/link';
-import { ProductCategory } from '~/types';
+import type { ProductCategory } from '~/types';
 import ButtonRedirect from '../buttons/ButtonRedirect';
 
 interface ProductCategoryProps {
@@ -10,6 +11,7 @@ const ProductCategoryCard = ({ productCategory }: ProductCategoryProps) => {
         <>
             <div className="smooth-effect relative h-[350px] w-full rounded-3xl pt-4 transition ease-in-out hover:-translate-y-1 hover:scale-105">
                 <img
+                    alt=""
                     src={productCategory.img}
                     className="z-0 mx-12 flex h-[350px] w-[760px] rounded-3xl bg-contain object-cover brightness-50"
                 />
