@@ -17,7 +17,7 @@ export const getCartProductsInputSchema = z
 export type CartProductsInput = z.infer<typeof getCartProductsInputSchema>;
 
 export const createProductInputSchema = z.object({
-    title: z.string().min(5).max(50),
+    title: z.string().max(50),
     image: z.string(),
     desc: z.string().max(500),
     categoryName: z.string(),

@@ -40,7 +40,7 @@ export const userRouter = router({
             });
             return user;
         }),
-    deleteCourseFromCart: userProcedure
+    deleteProductFromCart: userProcedure
         .input(z.object({ cartId: z.string() }))
         .mutation(async ({ input, ctx }) => {
             const { cartId } = input;
@@ -91,6 +91,10 @@ export const userRouter = router({
                     id: true,
                     updatedAt: true,
                     totalAmount: true,
+                    shippingStatus: true,
+                    name: true,
+                    phone: true,
+                    address: true,
                     paymentDetails: {
                         include: {
                             product: includeProduct

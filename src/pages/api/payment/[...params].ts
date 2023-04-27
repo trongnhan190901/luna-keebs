@@ -38,6 +38,9 @@ const payment = async (req: NextApiRequest, res: NextApiResponse) => {
             const { userId } = req.body;
             const orderInfo = req.body.orderDescription;
             const totalAmount = req.body.amount;
+            const name = req.body.name;
+            const phone = req.body.phone;
+            const address = req.body.address;
 
             if (!orderInfo) {
                 return res
@@ -61,6 +64,9 @@ const payment = async (req: NextApiRequest, res: NextApiResponse) => {
                     payments: {
                         create: {
                             status: 'PENDING',
+                            name,
+                            phone,
+                            address,
                             paymentGId: orderInfo,
                             totalAmount: totalAmount,
                             paymentDetails: {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { api } from '~/utils/api';
@@ -9,15 +10,15 @@ interface RemoveButtonProps {
     cartId: string;
 }
 const RemoveButton = ({ cartId }: RemoveButtonProps) => {
-    const { mutate: deleteCourseFromCart, status } =
-        api.user.deleteCourseFromCart.useMutation();
+    const { mutate: deleteProductFromCart, status } =
+        api.user.deleteProductFromCart.useMutation();
 
     const { data: userWithCart, refetch } = api.user.findCartByUser.useQuery({
         includeProduct: true,
     });
 
     const handleDeleteCart = () => {
-        deleteCourseFromCart({ cartId });
+        deleteProductFromCart({ cartId });
     };
 
     useEffect(() => {

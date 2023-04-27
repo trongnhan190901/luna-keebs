@@ -23,7 +23,7 @@ import type { inferProcedureInput } from '@trpc/server';
 import type { AppRouter } from '~/server/api/root';
 import { toast } from 'react-hot-toast';
 import { useState } from 'react';
-import { CreateProductsInput } from '~/helpers/validations/productRoutesSchema';
+import type { CreateProductsInput } from '~/helpers/validations/productRoutesSchema';
 
 interface AddNewProductProps {
     type: 'add' | 'edit';
@@ -41,13 +41,8 @@ const ProductForm = ({
 
     const utils = api.useContext();
 
-    const { data: categoryList, refetch } = api.admin.getCategoryList.useQuery(
-        undefined,
-        {
-            refetchOnWindowFocus: false,
-            onError: (err) => console.error(err.message),
-        },
-    );
+    const { data: categoryList, refetch } =
+        api.product.getCategoryList.useQuery();
 
     const {
         id: imageId,

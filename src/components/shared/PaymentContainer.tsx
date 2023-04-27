@@ -75,7 +75,6 @@ const PaymentContainer = () => {
                                                             paymentId={
                                                                 paymentItemId
                                                             }
-                                                            refetch={refetch}
                                                         />
                                                     </div>
                                                 );

@@ -98,3 +98,37 @@ button:focus {
     transition-property: all;
     transition-duration: 300ms;
 }
+
+.pagination {
+    display: flex;
+    font-size: 16px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2rem;
+}
+
+.pagination:focus {
+    outline: none;
+}
+
+.previous_page,
+.next_page {
+    margin: 0 1rem;
+    cursor: pointer;
+}
+
+.pagination_disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.pagination_active {
+    background-color: lightgray;
+    border-radius: 50%;
+}
+
+.page_link {
+    margin: 4px;
+    padding: 4px;
+    border-radius: 50%;
+}

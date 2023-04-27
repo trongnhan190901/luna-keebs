@@ -10,24 +10,11 @@ import { api } from '~/utils/api';
 
 const NewArrival = () => {
     const utils = api.useContext();
-    const getAllProductQuery = api.product.getAllProduct.useInfiniteQuery(
-        {
-            limit: 5,
-        },
-        {
-            getPreviousPageParam(lastPage) {
-                return lastPage.nextCursor;
-            },
-        },
-    );
+    const getAllProductQuery = api.product.getAllProduct.useQuery({
+        limit: 5,
+    });
 
-    useEffect(() => {
-        const productsArray =
-            getAllProductQuery.data?.pages.flatMap((page) => page.items) ?? [];
-        for (const { id } of productsArray) {
-            void utils.product.getProduct.prefetch({ id });
-        }
-    }, [getAllProductQuery.data, utils]);
+    console.log(getAllProductQuery);
 
     return (
         <>
@@ -36,15 +23,8 @@ const NewArrival = () => {
                     <h2 className="absolute-center font-italic font-secondary text-6xl">
                         Nổi bật
                     </h2>
-                    <div className="absolute-center mb-4 h-[40px] w-full">
-                        <Link href="#">
-                            <span className="font-secondary text-2xl text-gray-500 underline underline-offset-4 hover:text-black">
-                                Mua ngay
-                            </span>
-                        </Link>
-                    </div>
 
-                    <div className="mx-auto h-[35rem] w-full">
+                    <div className="mx-auto mt-16 h-[35rem] w-full">
                         <div className="absolute-center h-fit w-full">
                             <Swiper
                                 modules={[
@@ -75,20 +55,18 @@ const NewArrival = () => {
                                     },
                                 }}
                             >
-                                {getAllProductQuery.data?.pages.map(
-                                    (page, index) => (
-                                        <Fragment
-                                            key={page.items[0]?.id || index}
-                                        >
-                                            {page.items.map((item) => (
+                                {getAllProductQuery.data?.items.map(
+                                    (item, index) => {
+                                        return (
+                                            <Fragment key={index}>
                                                 <SwiperSlide key={item.id}>
                                                     <ProductCard
                                                         product={item}
                                                     />
                                                 </SwiperSlide>
-                                            ))}
-                                        </Fragment>
-                                    ),
+                                            </Fragment>
+                                        );
+                                    },
                                 )}
                             </Swiper>
                         </div>

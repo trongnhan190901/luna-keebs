@@ -2,8 +2,12 @@ import { dateFormat } from '~/helpers/dateFormat';
 import { statusFormat } from '~/helpers/statusFormat';
 import { api } from '~/utils/api';
 import Loader from './Loader';
+import { useEffect } from 'react';
+import { useAtom } from 'jotai';
+import { refetchAtom } from '~/atoms/dataAtom';
 
 const TicketContainer = () => {
+    const [refetchStatus, setRefetchStatus] = useAtom(refetchAtom);
     const {
         data: tickets,
         status: ticketStatus,
@@ -11,6 +15,14 @@ const TicketContainer = () => {
     } = api.user.findTickets.useQuery({
         includeProduct: true,
     });
+
+    useEffect(() => {
+        if (refetchStatus === 'success') {
+            void refetch();
+        }
+        setRefetchStatus('loading');
+    });
+
     return (
         <>
             {ticketStatus === 'loading' ? (
@@ -19,7 +31,7 @@ const TicketContainer = () => {
                 </div>
             ) : (
                 <div className="mx-auto w-4/5">
-                    <ul className="mb-12 flex flex-col space-y-6">
+                    <ul className="mb-12 flex flex-col space-y-12">
                         {tickets && tickets.length > 0 ? (
                             tickets.map((ticket, index) => {
                                 return (

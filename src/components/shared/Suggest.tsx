@@ -1,37 +1,26 @@
 import Link from 'next/link';
 import { SuggestItems } from '~/constants';
 import ProductCard from './ProductCard';
+import { useEffect } from 'react';
+import { api } from '~/utils/api';
+
 const Suggest = () => {
+    const utils = api.useContext();
+    const getAllProductQuery = api.product.getAllProduct.useQuery({
+        limit: 10,
+    });
+
     return (
         <>
             <div className="absolute-center h-full min-h-screen w-full">
-                <div className="mt-5 h-full w-[90%]">
+                <div className="mt-5 h-full w-[85%]">
                     <h2 className="absolute-center font-italic font-secondary text-6xl">
                         Gợi ý cho bạn
                     </h2>
-                    <div className="absolute-center mb-4 h-[40px] w-full">
-                        <Link href="#">
-                            <span className="font-secondary text-2xl text-gray-500 underline underline-offset-4 hover:text-black">
-                                Mua ngay
-                            </span>
-                        </Link>
-                    </div>
-                    <div className="my-8 h-[80rem] w-full">
-                        {SuggestItems.map((item, index) => {
-                            return (
-                                <div className="absolute-center" key={index}>
-                                    {item.map((value) => {
-                                        return (
-                                            <div
-                                                key={value.id}
-                                                className="mx-5"
-                                            >
-                                                <ProductCard product={value} />
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            );
+
+                    <div className="my-8 mx-auto flex h-[80rem] w-full flex-wrap">
+                        {getAllProductQuery.data?.items.map((item, index) => {
+                            return <ProductCard key={index} product={item} />;
                         })}
                     </div>
 

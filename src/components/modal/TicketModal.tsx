@@ -7,20 +7,24 @@ import { api } from '~/utils/api';
 import toast from 'react-hot-toast';
 import type { inferProcedureInput } from '@trpc/server';
 import type { AppRouter } from '~/server/api/root';
+import { refetchAtom } from '~/atoms/dataAtom';
 
 interface TicketModalProps {
     paymentId: string;
     productId: string;
-    refetch: () => void;
 }
-const TicketModal = ({ paymentId, productId, refetch }: TicketModalProps) => {
+const TicketModal = ({ paymentId, productId }: TicketModalProps) => {
     const [isOpen, setIsOpen] = useAtom(ticketState);
     const createTicket = api.user.createTicket.useMutation();
+    const [refetchStatus, setRefetchStatus] = useAtom(refetchAtom);
 
-    const { data: issueList } = api.user.getTicketIssue.useQuery(undefined, {
-        refetchOnWindowFocus: false,
-        onError: (err) => console.error(err.message),
-    });
+    const { data: issueList, refetch } = api.user.getTicketIssue.useQuery(
+        undefined,
+        {
+            refetchOnWindowFocus: false,
+            onError: (err) => console.error(err.message),
+        },
+    );
 
     return (
         <>
@@ -72,7 +76,8 @@ const TicketModal = ({ paymentId, productId, refetch }: TicketModalProps) => {
                                         toast.success(
                                             'Gửi yêu cầu hỗ trợ thành công',
                                         );
-                                        refetch();
+                                        setRefetchStatus('success');
+                                        void refetch();
                                         $form.reset();
                                     } catch (cause) {
                                         toast.error(

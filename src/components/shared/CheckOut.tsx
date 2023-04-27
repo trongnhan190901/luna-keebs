@@ -2,11 +2,17 @@
 import React from 'react';
 import { useCartContext } from '~/providers/CartContextProvider';
 
-export default function CheckOut() {
+interface CheckoutProps {
+    name: string;
+    phone: string;
+    address: string;
+}
+
+export default function CheckOut({ name, phone, address }: CheckoutProps) {
     const cartCtx = useCartContext();
 
     const handleCheckout = async () => {
-        await cartCtx?.handleCheckout();
+        await cartCtx?.handleCheckout(name, phone, address);
     };
 
     if (!cartCtx?.totalAmount || cartCtx?.totalAmount === 0) {
