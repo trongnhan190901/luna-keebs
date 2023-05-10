@@ -4,6 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import type { Product } from '@prisma/client';
 import type { GetServerSideProps } from 'next';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import ReactPaginate from 'react-paginate';
@@ -41,6 +42,9 @@ const Category = ({ products, title }: CategoryProps) => {
 
     return (
         <>
+            <Head>
+                <title>{title}</title>
+            </Head>
             <div className="full-size absolute-center flex-col">
                 <div className="mx-auto mt-12 w-[85%]">
                     <div className="absolute-center my-12 font-secondary text-7xl font-bold">

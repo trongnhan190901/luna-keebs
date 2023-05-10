@@ -8,6 +8,7 @@ import type { Product } from '@prisma/client';
 import { db } from '~/libs/server/db';
 import { useState } from 'react';
 import ProductHeader from '~/components/shared/ProductHeader';
+import Head from 'next/head';
 
 interface DetailsPageProps {
     product: Product;
@@ -18,6 +19,9 @@ const DetailsPage = ({ product }: DetailsPageProps) => {
 
     return (
         <>
+            <Head>
+                <title>{product.title}</title>
+            </Head>
             <div className="full-size mt-20 mb-24 flex flex-col items-start justify-center">
                 <ProductHeader product={product} />
 
