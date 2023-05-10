@@ -3,13 +3,10 @@ import { useState } from 'react';
 import AdminPayment from '~/admin/AdminPayment';
 import AdminRevenue from '~/admin/AdminRevenue';
 import AdminTicket from '~/admin/AdminTicket';
-import { addProductState } from '~/atoms/modalAtom';
-import { useAtom } from 'jotai';
-import ProductForm from '~/components/modal/ProductForm';
 import classNames from 'classnames';
 import AdminProduct from './AdminProduct';
 
-const AdminNavbar = () => {
+const AdminContainer = () => {
     const [selectedIndex, setSelectedIndex] = useState(0);
 
     return (
@@ -18,7 +15,7 @@ const AdminNavbar = () => {
                 selectedIndex={selectedIndex}
                 onChange={setSelectedIndex}
             >
-                <Tab.List className=" h-[300px] w-[180px] flex-col bg-gray-200 font-secondary text-3xl font-bold">
+                <Tab.List className=" h-[300px] w-[250px] flex-col bg-gray-200 font-secondary text-3xl font-bold">
                     <Tab
                         className={({ selected }) =>
                             classNames(
@@ -100,4 +97,4 @@ const AdminNavbar = () => {
     );
 };
 
-export default AdminNavbar;
+export default AdminContainer;

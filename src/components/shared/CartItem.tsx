@@ -43,7 +43,7 @@ const CartItem = ({
                     </div>
                     <div className="mt-12 flex h-full w-1/2 text-center">
                         <div className="w-2/5">
-                            <div>{priceFormat(parseInt(product.price))}</div>
+                            <div>{priceFormat(product.price)}</div>
                         </div>
                         <div className="w-1/5">
                             <div> {cartQuantity}</div>

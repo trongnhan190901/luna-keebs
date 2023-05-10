@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable indent */
 /* eslint-disable @typescript-eslint/await-thenable */
 /* eslint-disable @typescript-eslint/no-floating-promises */
@@ -24,22 +25,17 @@ import type { AppRouter } from '~/server/api/root';
 import { toast } from 'react-hot-toast';
 import { useState } from 'react';
 import type { CreateProductsInput } from '~/helpers/validations/productRoutesSchema';
+import { isRefetch } from '~/atoms/dataAtom';
 
 interface AddNewProductProps {
     type: 'add' | 'edit';
     initialData?: FullProductClient;
-    deletePostAction?: () => void;
 }
 
-const ProductForm = ({
-    type,
-    initialData,
-    deletePostAction,
-}: AddNewProductProps) => {
-    const [isOpen, setIsOpen] = useAtom(addProductState);
+const ProductForm = ({ type, initialData }: AddNewProductProps) => {
+    const [isOpen, setIsOpen] = useState(false);
     const [changeImage, setChangeImage] = useState(type === 'add');
-
-    const utils = api.useContext();
+    const [isRf, setIsRf] = useAtom(isRefetch);
 
     const { data: categoryList, refetch } =
         api.product.getCategoryList.useQuery();
@@ -51,18 +47,6 @@ const ProductForm = ({
         file,
         setFile,
     } = useUploadImage(initialData?.id);
-
-    //add new product
-
-    //update product
-    // const { mutate: updateProduct } = api.admin.updateProduct.useMutation({
-    //     retry: false,
-    //     onSuccess: () => {
-    //         utils.product.get.invalidate();
-    //         utils.admin.getProductsInfo.invalidate();
-    //     },
-    //     onError: (err) => console.error(err.message),
-    // });
 
     const { setValue, getValues } = useForm<CreateProductsInput>({});
 
@@ -76,6 +60,14 @@ const ProductForm = ({
     const addProduct = api.admin.createProduct.useMutation();
     return (
         <>
+            <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="absolute-center h-20 w-64 rounded-3xl border-2 border-black hover:bg-black hover:text-white"
+            >
+                <span className="absolute-center mx-2 font-secondary text-3xl font-bold">
+                    Thêm sản phẩm
+                </span>
+            </button>
             <Transition
                 show={isOpen}
                 enter="transition duration-100 ease-out"
@@ -101,6 +93,7 @@ const ProductForm = ({
                             const values = Object.fromEntries(
                                 new FormData($form),
                             );
+
                             type Input = inferProcedureInput<
                                 AppRouter['admin']['createProduct']
                             >;
@@ -119,43 +112,25 @@ const ProductForm = ({
                             const input: Input = {
                                 title: values.title as string,
                                 categoryName: values.categoryName as string,
-                                price: values.price as string,
+                                price: BigInt(values.price),
                                 image: imageUrl as string,
-                                quantity: values.quantity as string,
-                                spec: values.spec as string,
+                                quantity: parseInt(values.quantity),
                                 desc: values.desc as string,
                             };
 
-                            switch (type) {
-                                case 'add':
-                                    try {
-                                        await addProduct.mutateAsync(input);
-                                        toast.success(
-                                            'Thêm sản phẩm thành công',
-                                        );
-                                        $form.reset();
-                                        refetch();
-                                    } catch (cause) {
-                                        toast.error('Thêm sản phẩm thất bại');
-                                        console.error(
-                                            { cause },
-                                            'Failed to add product',
-                                        );
-                                    }
-                                    break;
-                                case 'edit':
-                                    try {
-                                        // await addProduct.mutateAsync(input);
-                                        // $form.reset();
-                                    } catch (cause) {
-                                        console.error(
-                                            { cause },
-                                            'Failed to edit product',
-                                        );
-                                    }
-                                    break;
-                                default:
-                                    return;
+                            try {
+                                await addProduct.mutateAsync(input);
+                                toast.success('Thêm sản phẩm thành công');
+                                $form.reset();
+                                setIsRf(true);
+                                refetch();
+                                setIsOpen(false);
+                            } catch (cause) {
+                                toast.error('Thêm sản phẩm thất bại');
+                                console.error(
+                                    { cause },
+                                    'Failed to add product',
+                                );
                             }
                         }}
                         className="absolute-center fixed top-1/2 left-1/2 z-20 h-[900px] w-[1500px] -translate-x-1/2 -translate-y-1/2 flex-col rounded-3xl bg-white/80 font-primary text-xl font-semibold backdrop-blur-md"
@@ -219,6 +194,7 @@ const ProductForm = ({
                                                     title="Giá"
                                                     placeholder="Nhập giá"
                                                     required
+                                                    id="price"
                                                     className="w-80"
                                                     name="price"
                                                     // type="number"
@@ -229,30 +205,13 @@ const ProductForm = ({
                                                     title="Số lượng"
                                                     placeholder="Nhập số lượng"
                                                     required
+                                                    id="quan"
                                                     className="w-56"
                                                     // type="number"
                                                     name="quantity"
                                                 />
                                             </div>
                                         </div>
-
-                                        {initialData?.image && (
-                                            <div className="flex flex-row justify-end">
-                                                <Button
-                                                    color="secondary"
-                                                    className="p-3"
-                                                    localLoaderOnClick={false}
-                                                    type="button"
-                                                    onClick={() =>
-                                                        changeImageState()
-                                                    }
-                                                >
-                                                    {changeImage
-                                                        ? 'Cancel Change'
-                                                        : 'Change Image'}
-                                                </Button>
-                                            </div>
-                                        )}
 
                                         {changeImage && (
                                             <div>
@@ -290,8 +249,8 @@ const ProductForm = ({
                                                         file,
                                                     )}
                                                     alt="image"
-                                                    width={50}
-                                                    height={100}
+                                                    width={100}
+                                                    height={50}
                                                     className="h-auto w-auto"
                                                 />
                                             </div>
@@ -299,41 +258,23 @@ const ProductForm = ({
                                     </div>
                                     <div className="mx-24 flex flex-col space-y-4">
                                         <Input
-                                            title="Thông số kĩ thuật"
-                                            placeholder="Nhập thông số kĩ thuật"
-                                            required
-                                            textArea
-                                            name="spec"
-                                            className="h-[200px] w-[550px]"
-                                        />
-                                        <Input
                                             title="Mô tả sản phẩm"
                                             placeholder="Nhập mô tả sản phẩm"
                                             required
                                             textArea
                                             name="desc"
-                                            className="h-[330px] w-[550px]"
+                                            className="h-[540px] w-[550px]"
                                         />
                                     </div>
                                 </div>
 
                                 <div className="absolute-center flex-col pt-12">
-                                    {type === 'edit' && initialData && (
-                                        <DeleteProduct
-                                            id={initialData.id}
-                                            deletePostAction={deletePostAction}
-                                        />
-                                    )}
-                                    <Button
-                                        color="primary"
-                                        className="p-3"
+                                    <button
+                                        className="smooth-effect absolute-center mx-auto w-[150px] space-x-2 rounded-3xl border-2 border-gray-700 py-4 px-6 font-secondary text-2xl font-bold hover:scale-110 hover:bg-teal-200"
                                         type="submit"
                                     >
-                                        {type === 'add'
-                                            ? 'Thêm sản phẩm'
-                                            : 'Cập nhật sản phẩm'}
-                                    </Button>
-
+                                        Thêm sản phẩm
+                                    </button>
                                     <button
                                         className="absolute-center smooth-effect my-6 font-secondary text-2xl  hover:scale-110 hover:text-rose-500"
                                         onClick={() => setIsOpen(!isOpen)}

@@ -99,48 +99,75 @@ const DesktopNavigation = () => {
 
                 <ul>
                     <li className="group relative mx-6 cursor-pointer tracking-wide hover:underline hover:underline-offset-8">
+                        <Link href="/">Linh kiện</Link>
+                        <div className="absolute -ml-6 hidden h-auto py-6 group-hover:flex">
+                            <ul className="top-0 w-52 bg-[#fcf8ee] py-4 px-6 shadow">
+                                <li className="py-2">
+                                    <button
+                                        onClick={() => handleClick('Switch')}
+                                        className="flex cursor-pointer font-bold text-gray-500 hover:text-black"
+                                    >
+                                        Switch
+                                    </button>
+                                </li>
+                                <li className="py-2">
+                                    <button
+                                        onClick={() => handleClick('Keycap')}
+                                        className="flex cursor-pointer font-bold text-gray-500 hover:text-black"
+                                    >
+                                        Keycap
+                                    </button>
+                                </li>
+                                <li className="py-2">
+                                    <button
+                                        onClick={() =>
+                                            handleClick('Stabilizer')
+                                        }
+                                        className="flex cursor-pointer font-bold text-gray-500 hover:text-black"
+                                    >
+                                        Stabilizer
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+                <ul>
+                    <li className="group relative mx-6 cursor-pointer tracking-wide hover:underline hover:underline-offset-8">
                         <Link href="/">Phụ kiện</Link>
                         <div className="absolute -ml-6 hidden h-auto py-6 group-hover:flex">
                             <ul className="top-0 w-52 bg-[#fcf8ee] py-4 px-6 shadow">
                                 <li className="py-2">
-                                    <a className="flex cursor-pointer font-bold text-gray-500 hover:text-black">
-                                        Switches
-                                    </a>
-                                </li>
-                                <li className="py-2">
-                                    <a className="flex cursor-pointer font-bold text-gray-500 hover:text-black">
-                                        Keycaps
-                                    </a>
-                                </li>
-                                <li className="py-2">
-                                    <a className="flex cursor-pointer font-bold text-gray-500 hover:text-black">
-                                        Stabilizers
-                                    </a>
-                                </li>
-                                <li className="py-2">
-                                    <a className="flex cursor-pointer font-bold text-gray-500 hover:text-black">
-                                        Cables
-                                    </a>
-                                </li>
-                                <li className="py-2">
-                                    <a className="flex cursor-pointer font-bold text-gray-500 hover:text-black">
+                                    <button
+                                        onClick={() => handleClick('Deskmat')}
+                                        className="flex cursor-pointer font-bold text-gray-500 hover:text-black"
+                                    >
                                         Deskmats
-                                    </a>
+                                    </button>
                                 </li>
                                 <li className="py-2">
-                                    <a className="flex cursor-pointer font-bold text-gray-500 hover:text-black">
+                                    <button
+                                        onClick={() => handleClick('Kê tay')}
+                                        className="flex cursor-pointer font-bold text-gray-500 hover:text-black"
+                                    >
                                         Kê tay
-                                    </a>
+                                    </button>
                                 </li>
                                 <li className="py-2">
-                                    <a className="flex cursor-pointer font-bold text-gray-500 hover:text-black">
-                                        Bags
-                                    </a>
+                                    <button
+                                        onClick={() => handleClick('Bag')}
+                                        className="flex cursor-pointer font-bold text-gray-500 hover:text-black"
+                                    >
+                                        Bag
+                                    </button>
                                 </li>
                                 <li className="py-2">
-                                    <a className="flex cursor-pointer font-bold text-gray-500 hover:text-black">
+                                    <button
+                                        onClick={() => handleClick('Modding')}
+                                        className="flex cursor-pointer font-bold text-gray-500 hover:text-black"
+                                    >
                                         Modding
-                                    </a>
+                                    </button>
                                 </li>
                             </ul>
                         </div>
@@ -149,27 +176,8 @@ const DesktopNavigation = () => {
 
                 <ul>
                     <li className="group relative mx-6 cursor-pointer tracking-wide hover:underline hover:underline-offset-8">
-                        <Link href="/">Group Buy</Link>
-                        <div className="absolute -ml-6 hidden h-auto py-6 group-hover:flex">
-                            <ul className="top-0 w-48 bg-[#fcf8ee] py-4 px-6 shadow">
-                                <li className="py-2">
-                                    <a className="flex cursor-pointer font-bold text-gray-500 hover:text-black">
-                                        Live
-                                    </a>
-                                </li>
-                                <li className="py-2">
-                                    <a className="flex cursor-pointer font-bold text-gray-500 hover:text-black">
-                                        Update
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
-                </ul>
-                <ul>
-                    <li className="group relative mx-6 cursor-pointer tracking-wide hover:underline hover:underline-offset-8">
                         <Link href="/">Khác</Link>
-                        <div className="absolute -ml-6 hidden h-auto py-6 group-hover:flex">
+                        {/* <div className="absolute -ml-6 hidden h-auto py-6 group-hover:flex">
                             <ul className="top-0 w-56 bg-[#fcf8ee] py-4 px-6 shadow">
                                 <li className="py-2">
                                     <a className="flex cursor-pointer font-bold text-gray-500 hover:text-black">
@@ -202,7 +210,7 @@ const DesktopNavigation = () => {
                                     </a>
                                 </li>
                             </ul>
-                        </div>
+                        </div> */}
                     </li>
                 </ul>
             </div>

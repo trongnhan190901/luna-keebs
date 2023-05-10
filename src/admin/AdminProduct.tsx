@@ -1,27 +1,40 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { useAtom } from 'jotai';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ReactPaginate from 'react-paginate';
 import { addProductState } from '~/atoms/modalAtom';
 import ProductForm from '~/components/modal/ProductForm';
+import Loader from '~/components/shared/Loader';
 import ProductCard from '~/components/shared/ProductCard';
 import { api } from '~/utils/api';
+import DeleteProduct from './DeleteProduct';
+import EditProduct from './EditProduct';
+import { isRefetch } from '~/atoms/dataAtom';
 
 const AdminProduct = () => {
-    const [newProductOpen, setNewProductOpen] = useAtom(addProductState);
+    const [isRf, setIsRf] = useAtom(isRefetch);
 
-    const products = api.product.getAllProduct.useQuery({});
+    const {
+        data: products,
+        status,
+        refetch,
+    } = api.product.getAllProduct.useQuery({ orderByTime: 'desc' });
 
     const [pageNumber, setPageNumber] = useState(0);
     const productPerPage = 12;
     const pagesVisited = pageNumber * productPerPage;
 
-    const pageCount = Math.ceil(products?.data?.items.length / productPerPage);
+    const pageCount = Math.ceil(products?.items.length / productPerPage);
 
-    const changePage = ({ selected }) => {
+    const changePage = ({ selected }: any) => {
         setPageNumber(selected);
     };
+
+    useEffect(() => {
+        void refetch();
+        setIsRf(false);
+    }, [isRf]);
 
     return (
         <>
@@ -29,22 +42,44 @@ const AdminProduct = () => {
                 <div className="absolute-center my-16 mt-28 font-secondary text-7xl font-bold">
                     Thống kê sản phẩm
                 </div>
-                <button
-                    onClick={() => setNewProductOpen(!newProductOpen)}
-                    className="absolute-center h-20 w-64 rounded-3xl border-2 border-black hover:bg-black hover:text-white"
-                >
-                    <span className="absolute-center mx-2 font-secondary text-3xl font-bold">
-                        Thêm sản phẩm
-                    </span>
-                    <ProductForm type="add" />
-                </button>
-                <div className="flex w-4/5 flex-wrap">
-                    {products.data?.items
-                        .slice(pagesVisited, pagesVisited + productPerPage)
-                        .map((item, index) => {
-                            return <ProductCard product={item} key={index} />;
-                        })}
+                <ProductForm type="add" />
+                <div className="mt-16 w-5/6">
+                    {status === 'loading' ? (
+                        <div className="absolute-center min-h-[10rem] w-full">
+                            <Loader />
+                        </div>
+                    ) : (
+                        <div className="flex w-full flex-wrap">
+                            {products?.items
+                                .slice(
+                                    pagesVisited,
+                                    pagesVisited + productPerPage,
+                                )
+                                .map((item, index) => {
+                                    return (
+                                        <div
+                                            key={item.id}
+                                            className="m-2 rounded-2xl p-2"
+                                        >
+                                            <ProductCard product={item} />
+                                            <div className="absolute-center mb-3 font-secondary text-3xl">
+                                                Số lượng còn lại:{' '}
+                                                {item.quantity}
+                                            </div>
+                                            <div className="absolute-center w-full space-x-4">
+                                                <EditProduct
+                                                    type="edit"
+                                                    initialData={item}
+                                                />
+                                                <DeleteProduct id={item.id} />
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                        </div>
+                    )}
                 </div>
+
                 <ReactPaginate
                     previousLabel={'Previous'}
                     nextLabel={'Next'}

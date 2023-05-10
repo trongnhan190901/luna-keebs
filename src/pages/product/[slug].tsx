@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
@@ -22,20 +23,21 @@ const DetailsPage = ({ product }: DetailsPageProps) => {
 
                 <div className="absolute-center mx-auto mt-24 h-full w-[90%] flex-col">
                     <div className="w-full font-secondary text-5xl font-bold">
-                        Thông số kĩ thuật
-                    </div>
-                    <pre>{product?.spec}</pre>
-
-                    <div className="w-full font-secondary text-5xl font-bold">
                         Mô tả sản phẩm
                     </div>
-                    <pre className="absolute-center full-size mt-6 font-primary text-3xl">
+                    <pre className="full-size mt-6 pl-4 font-primary text-3xl">
                         {product?.desc}
                     </pre>
                 </div>
             </div>
         </>
     );
+};
+
+const toJson = (data: object) => {
+    return JSON.stringify(data, (_, v) =>
+        typeof v === 'bigint' ? `${v}n` : v,
+    ).replace(/"(-?\d+)n"/g, (_, a) => a);
 };
 
 export const getStaticProps: GetStaticProps = async ({ params }: any) => {
@@ -49,7 +51,7 @@ export const getStaticProps: GetStaticProps = async ({ params }: any) => {
 
     return {
         props: {
-            product: JSON.parse(JSON.stringify(product)),
+            product: JSON.parse(toJson(product)),
         },
     };
 };

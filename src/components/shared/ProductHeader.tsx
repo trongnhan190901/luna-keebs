@@ -19,6 +19,7 @@ const ProductHeader = ({ product }: ProductHeaderProps) => {
     const { status: sessionStatus } = useSession();
     const [isLogin, setIsLogin] = useAtom(logInState);
     const cartCtx = useCartContext();
+    const [outOfStock, setOutOfStock] = useState(false);
 
     const handleAddToCart = () => {
         if (sessionStatus === 'unauthenticated') {
@@ -44,13 +45,19 @@ const ProductHeader = ({ product }: ProductHeaderProps) => {
     };
 
     useEffect(() => {
+        if (product.quantity === 0) {
+            setOutOfStock(true);
+        }
+    }, [outOfStock]);
+
+    useEffect(() => {
         if (count === 1) {
             setDisableMinus(true);
         } else {
             setDisableMinus(false);
         }
 
-        if (count === parseInt(product.quantity)) {
+        if (count === product.quantity) {
             setDisablePlus(true);
         } else {
             setDisablePlus(false);
@@ -78,7 +85,7 @@ const ProductHeader = ({ product }: ProductHeaderProps) => {
                         {product?.title}
                     </h1>
                     <div className="ml-12 mt-12 mb-20 font-primary text-4xl font-bold text-teal-500">
-                        {priceFormat(parseInt(product?.price))}
+                        {priceFormat(product?.price)}
                     </div>
 
                     <div className="mb-2 font-secondary text-3xl font-medium text-gray-900">
@@ -112,12 +119,22 @@ const ProductHeader = ({ product }: ProductHeaderProps) => {
                     <div className="font-secondary text-2xl">
                         Số lượng còn lại: {product.quantity}
                     </div>
-                    <button
-                        onClick={() => handleAddToCart()}
-                        className="absolute-center my-8 h-20 w-96 overflow-hidden rounded-xl border-2 border-black font-secondary text-3xl font-medium text-black hover:bg-black hover:text-white"
-                    >
-                        Thêm vào giỏ hàng
-                    </button>
+                    {outOfStock ? (
+                        <button
+                            disabled={true}
+                            onClick={() => handleAddToCart()}
+                            className="absolute-center my-8 h-20 w-96 overflow-hidden rounded-xl border-2 border-black bg-gray-300 font-secondary text-3xl font-medium text-black"
+                        >
+                            Hết hàng
+                        </button>
+                    ) : (
+                        <button
+                            onClick={() => handleAddToCart()}
+                            className="absolute-center my-8 h-20 w-96 overflow-hidden rounded-xl border-2 border-black font-secondary text-3xl font-medium text-black hover:bg-black hover:text-white"
+                        >
+                            Thêm vào giỏ hàng
+                        </button>
+                    )}
                 </div>
             </div>
         </>

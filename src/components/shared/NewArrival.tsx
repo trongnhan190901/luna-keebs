@@ -12,9 +12,8 @@ const NewArrival = () => {
     const utils = api.useContext();
     const getAllProductQuery = api.product.getAllProduct.useQuery({
         limit: 5,
+        orderByTime: 'asc',
     });
-
-    console.log(getAllProductQuery);
 
     return (
         <>
@@ -36,6 +35,7 @@ const NewArrival = () => {
                                 spaceBetween={0}
                                 slidesPerView="auto"
                                 navigation
+                                initialSlide={1}
                                 loop={true}
                                 speed={1200}
                                 pagination={{ clickable: true }}

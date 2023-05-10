@@ -8,6 +8,7 @@ const Suggest = () => {
     const utils = api.useContext();
     const getAllProductQuery = api.product.getAllProduct.useQuery({
         limit: 10,
+        orderByTime: 'desc',
     });
 
     return (

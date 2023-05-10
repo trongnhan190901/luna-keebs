@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import type { Payment } from '@prisma/client';
 import type { ReactNode } from 'react';
 import { dateFormat } from '~/helpers/dateFormat';
 import { priceFormat } from '~/helpers/priceFormat';
 import { shippingStatusFormat } from '~/helpers/shippingStatusFormat';
+import { api } from '~/utils/api';
 
 interface PaymentCardProps {
     payment: Payment;
@@ -10,6 +12,10 @@ interface PaymentCardProps {
 }
 
 const PaymentCard = ({ payment, children }: PaymentCardProps) => {
+    const { data: address } = api.user.findPaymentAddress.useQuery({
+        data: payment.addressId,
+    });
+
     return (
         <>
             <div className="mb-12 flex h-full w-full flex-col space-y-3 rounded-2xl border-2 border-black p-6 font-primary text-3xl">
@@ -21,20 +27,21 @@ const PaymentCard = ({ payment, children }: PaymentCardProps) => {
                 </div>
                 <div>
                     {' '}
-                    <b>Tên người nhận:</b> {payment.name}
+                    <b>Tên người nhận:</b> {address?.name}
                 </div>
                 <div>
                     {' '}
-                    <b>SĐT người nhận:</b> {payment.phone}
+                    <b>SĐT người nhận:</b> {address?.phone}
                 </div>
                 <div>
                     {' '}
                     <b>Địa chỉ: </b>
-                    {payment.address}
+                    {address?.home}, {address?.ward}, {address?.district},{' '}
+                    {address?.province}
                 </div>
                 <div>
                     <b>Trạng thái giao hàng:</b>{' '}
-                    {shippingStatusFormat(payment.shippingStatus)}
+                    {shippingStatusFormat(payment?.shippingStatus)}
                 </div>
                 <div>
                     {' '}
@@ -43,7 +50,7 @@ const PaymentCard = ({ payment, children }: PaymentCardProps) => {
                 <div className="flex w-full flex-col space-y-6">{children}</div>
                 <div className="text-end text-3xl">
                     <b>Tổng: </b>
-                    {priceFormat(parseInt(payment.totalAmount.toString()))}
+                    {priceFormat(payment?.totalAmount)}
                 </div>
             </div>
         </>

@@ -21,9 +21,8 @@ export const createProductInputSchema = z.object({
     image: z.string(),
     desc: z.string().max(500),
     categoryName: z.string(),
-    spec: z.string(),
-    quantity: z.string(),
-    price: z.string(),
+    quantity: z.number(),
+    price: z.bigint(),
 });
 
 export type CreateProductsInput = z.infer<typeof createProductInputSchema>;

@@ -65,9 +65,8 @@ const Button = ({
                 className,
             )}
             onClick={handleClick}
-        >
-            Thêm sản phẩm
-        </button>
+            {...props}
+        ></button>
     );
 };
 

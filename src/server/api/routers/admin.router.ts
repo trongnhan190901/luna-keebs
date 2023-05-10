@@ -62,18 +62,18 @@ export const adminRouter = router({
             }),
         )
         .mutation(async ({ ctx, input }) => {
-            return await ctx.prisma.product.update({
+            return await ctx.prisma.product.delete({
                 where: {
                     id: input.id,
-                },
-                data: {
-                    deleted: true,
-                    updatedAt: new Date(),
                 },
             });
         }),
     findAllPayment: adminProcedure
-        .input(z.object({ includeProduct: z.boolean() }))
+        .input(
+            z.object({
+                includeProduct: z.boolean(),
+            }),
+        )
         .query(async ({ ctx, input }) => {
             const { includeProduct } = input;
 
@@ -84,9 +84,7 @@ export const adminRouter = router({
                     totalAmount: true,
                     shippingStatus: true,
                     status: true,
-                    name: true,
-                    phone: true,
-                    address: true,
+                    addressId: true,
                     paymentDetails: {
                         include: {
                             product: includeProduct
@@ -102,6 +100,9 @@ export const adminRouter = router({
                                 : includeProduct,
                         },
                     },
+                },
+                orderBy: {
+                    createdAt: 'desc',
                 },
             });
 
@@ -149,6 +150,9 @@ export const adminRouter = router({
                         title: true,
                     },
                 },
+            },
+            orderBy: {
+                createdAt: 'desc',
             },
         });
 
@@ -198,6 +202,24 @@ export const adminRouter = router({
         });
         return revenue;
     }),
+    findPaymentAddress: adminProcedure
+        .input(z.object({ data: z.string() }))
+        .query(async ({ ctx, input }) => {
+            const { data } = input;
+
+            const address = await ctx.prisma.address.findUnique({
+                where: { id: data },
+                select: {
+                    name: true,
+                    phone: true,
+                    home: true,
+                    province: true,
+                    district: true,
+                    ward: true,
+                },
+            });
+            return address;
+        }),
 });
 
 type AdminRouterOutput = inferRouterOutputs<typeof adminRouter>;

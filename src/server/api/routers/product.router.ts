@@ -25,18 +25,22 @@ export const productRouter = router({
         .input(
             z.object({
                 limit: z.number().min(1).max(100).nullish(),
+                orderByTime: z.string().default('asc'),
             }),
         )
         .query(async ({ ctx, input }) => {
             const limit = input.limit ?? 50;
+            const { orderByTime } = input;
 
             const items = await ctx.prisma.product.findMany({
                 take: limit,
-                where: {},
+                orderBy: {
+                    createdAt: orderByTime,
+                },
             });
 
             return {
-                items: items.reverse(),
+                items: items,
             };
         }),
     getCategoryList: publicProcedure.query(async ({ ctx }) => {

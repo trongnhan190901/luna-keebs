@@ -11,12 +11,8 @@ export type UserSession =
 
 // product data including its category and number or orderedItems
 export interface FullProduct extends Product {
-    updatedAt: Date;
-    createdAt: Date;
-    category: Category;
-    _count: {
-        orderItems: number;
-    };
+    updatedAt: string;
+    createdAt: string;
 }
 
 // FullProduct data but converting sizes types from decimal to string for the client side usage

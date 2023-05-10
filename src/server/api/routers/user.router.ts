@@ -6,17 +6,8 @@
 import { z } from 'zod';
 import { userProcedure } from '../procedures';
 import { router } from '../trpc';
-import { createAddressInputSchema } from '~/helpers/validations/userRoutesSchema';
 
 export const userRouter = router({
-    profile: userProcedure.query(async ({ ctx }) => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-        return await ctx.prisma.user.findFirst({
-            where: {
-                id: ctx.session.user.id,
-            },
-        });
-    }),
     addProductToCart: userProcedure
         .input(
             z.object({
@@ -92,9 +83,7 @@ export const userRouter = router({
                     updatedAt: true,
                     totalAmount: true,
                     shippingStatus: true,
-                    name: true,
-                    phone: true,
-                    address: true,
+                    addressId: true,
                     paymentDetails: {
                         include: {
                             product: includeProduct
@@ -110,6 +99,9 @@ export const userRouter = router({
                                 : includeProduct,
                         },
                     },
+                },
+                orderBy: {
+                    createdAt: 'desc',
                 },
             });
 
@@ -179,7 +171,100 @@ export const userRouter = router({
                         },
                     },
                 },
+                orderBy: {
+                    createdAt: 'desc',
+                },
             });
             return tickets;
+        }),
+    addNewAddress: userProcedure
+        .input(
+            z.object({
+                name: z.string(),
+                phone: z.string(),
+                home: z.string(),
+                province: z.string(),
+                district: z.string(),
+                ward: z.string(),
+            }),
+        )
+        .mutation(async ({ ctx, input }) => {
+            const { name, phone, home, province, district, ward } = input;
+
+            const user = await ctx.prisma.user.update({
+                where: { id: ctx.session.user.id },
+                data: {
+                    address: {
+                        create: {
+                            name: name,
+                            phone: phone,
+                            home: home,
+                            province: province,
+                            district: district,
+                            ward: ward,
+                        },
+                    },
+                },
+            });
+            return user;
+        }),
+    findAddress: userProcedure.query(async ({ ctx }) => {
+        const addresses = await ctx.prisma.address.findMany({
+            where: { userId: ctx.session.user.id },
+            select: {
+                id: true,
+                name: true,
+                phone: true,
+                home: true,
+                province: true,
+                district: true,
+                ward: true,
+            },
+        });
+        return addresses;
+    }),
+    findPaymentAddress: userProcedure
+        .input(z.object({ data: z.string() }))
+        .query(async ({ ctx, input }) => {
+            const { data } = input;
+
+            const address = await ctx.prisma.address.findUnique({
+                where: { id: data },
+                select: {
+                    name: true,
+                    phone: true,
+                    home: true,
+                    province: true,
+                    district: true,
+                    ward: true,
+                },
+            });
+            return address;
+        }),
+    findDefaultAddress: userProcedure.query(async ({ ctx }) => {
+        const addresses = await ctx.prisma.address.findFirst({
+            where: { userId: ctx.session.user.id },
+            select: {
+                id: true,
+                name: true,
+                phone: true,
+                home: true,
+                province: true,
+                district: true,
+                ward: true,
+            },
+        });
+        return addresses;
+    }),
+    deleteAddress: userProcedure
+        .input(z.object({ addressId: z.string() }))
+        .mutation(async ({ input, ctx }) => {
+            const { addressId } = input;
+
+            const deleteAddress = await ctx.prisma.address.delete({
+                where: { id: addressId },
+            });
+
+            return deleteAddress;
         }),
 });

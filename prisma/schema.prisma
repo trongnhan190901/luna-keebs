@@ -51,6 +51,7 @@ model User {
   payments      Payment[]
   cart          Cart[]
   ticket        Ticket[]
+  address       Address[]
 }
 
 model Product {
@@ -59,14 +60,13 @@ model Product {
   categoryName  String
   category      Category        @relation(fields: [categoryName], references: [name])
   image         String
-  price         String
-  quantity      String
-  spec          String
+  price         BigInt
+  quantity      Int
+  spec          String?
   desc          String
   slug          String          @unique
   createdAt     DateTime        @default(now())
   updatedAt     DateTime?
-  deleted       Boolean         @default(false)
   cart          Cart[]
   PaymentDetail PaymentDetail[]
   Ticket        Ticket[]
@@ -77,8 +77,22 @@ model Product {
 model Category {
   id       String    @id @default(auto()) @map("_id") @db.ObjectId
   name     String    @unique
-  image    String
   products Product[]
+}
+
+model Address {
+  id       String    @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  phone    String
+  home     String
+  province String
+  district String
+  ward     String
+  Payment  Payment[]
+  user     User      @relation(fields: [userId], references: [id])
+  userId   String    @db.ObjectId
+
+  @@index([userId])
 }
 
 enum PAYMENT_STATUS {
@@ -100,10 +114,10 @@ model Payment {
   totalAmount    BigInt?
   Ticket         Ticket[]
   shippingStatus SHIPPING_STATUS? @default(PENDING)
-  name           String
-  phone          String
-  address        String
+  addressId      String           @db.ObjectId
+  address        Address          @relation(fields: [addressId], references: [id])
 
+  @@index([addressId])
   @@index([userId])
 }
 

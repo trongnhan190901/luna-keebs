@@ -76,11 +76,7 @@ const CartContextProvider = ({ children }: { children: React.ReactNode }) => {
         }, 0);
     }, [userWithCart]);
 
-    const handleCheckout = async (
-        name: string,
-        phone: string,
-        address: string,
-    ) => {
+    const handleCheckout = async (addressId: string) => {
         setCheckoutStatus('loading');
         if (
             status === 'loading' ||
@@ -98,9 +94,7 @@ const CartContextProvider = ({ children }: { children: React.ReactNode }) => {
         try {
             const data = await axios.post('/api/payment/create', {
                 amount: totalAmount,
-                name,
-                phone,
-                address,
+                addressId,
                 orderDescription: nanoid(),
                 userId: session?.user?.id,
                 cartItem: userWithCart.cart.map((elem) => ({
@@ -121,7 +115,6 @@ const CartContextProvider = ({ children }: { children: React.ReactNode }) => {
     useEffect(() => {
         if (addProductToCartStatus === 'success') {
             toast.success('Thêm vào giỏ hàng thành công!');
-            console.log(totalAmount);
             refetchData();
         }
 

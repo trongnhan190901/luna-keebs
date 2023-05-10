@@ -32,6 +32,10 @@ const AdminTicket = () => {
         setPageNumber(selected);
     };
 
+    const changeData = (data: string) => {
+        setData(data);
+    };
+
     return (
         <>
             <div className="my-16 w-full">
@@ -209,18 +213,22 @@ const AdminTicket = () => {
                                     Chưa có yêu cầu nào
                                 </li>
                             )}
-                            <ReactPaginate
-                                previousLabel={'Previous'}
-                                nextLabel={'Next'}
-                                pageCount={pageCount}
-                                onPageChange={changePage}
-                                containerClassName={'pagination'}
-                                previousLinkClassName={'previous_page'}
-                                nextLinkClassName={'next_page'}
-                                disabledClassName={'pagination_disabled'}
-                                activeClassName={'pagination_active'}
-                                pageLinkClassName={'page_link'}
-                            />
+                            {allTicket && allTicket.length > 0 ? (
+                                <ReactPaginate
+                                    previousLabel={'Previous'}
+                                    nextLabel={'Next'}
+                                    pageCount={pageCount}
+                                    onPageChange={changePage}
+                                    containerClassName={'pagination'}
+                                    previousLinkClassName={'previous_page'}
+                                    nextLinkClassName={'next_page'}
+                                    disabledClassName={'pagination_disabled'}
+                                    activeClassName={'pagination_active'}
+                                    pageLinkClassName={'page_link'}
+                                />
+                            ) : (
+                                <div className="hidden" />
+                            )}
                         </ul>
                     </div>
                 )}

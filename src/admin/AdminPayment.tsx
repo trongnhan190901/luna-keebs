@@ -10,8 +10,8 @@ import toast from 'react-hot-toast';
 import type { AppRouter } from '~/server/api/root';
 import type { SHIPPING_STATUS } from '@prisma/client';
 import { useState } from 'react';
-import ProductCard from '../components/shared/ProductCard';
 import ReactPaginate from 'react-paginate';
+import PaymentAddress from './PaymentAddress';
 
 const AdminPayment = () => {
     const {
@@ -52,9 +52,8 @@ const AdminPayment = () => {
                                     )
                                     .map((payment, index) => {
                                         return (
-                                            <>
+                                            <div key={index}>
                                                 <form
-                                                    key={index}
                                                     onSubmit={async (e) => {
                                                         e.preventDefault();
                                                         const $form =
@@ -146,37 +145,11 @@ const AdminPayment = () => {
                                                         </div>
                                                         <div className="w-1/2">
                                                             <div className="flex w-full flex-col space-y-4">
-                                                                <div>
-                                                                    {' '}
-                                                                    <b>
-                                                                        Tên
-                                                                        người
-                                                                        nhận:
-                                                                    </b>{' '}
-                                                                    {
-                                                                        payment.name
+                                                                <PaymentAddress
+                                                                    payment={
+                                                                        payment
                                                                     }
-                                                                </div>
-                                                                <div>
-                                                                    {' '}
-                                                                    <b>
-                                                                        SĐT
-                                                                        người
-                                                                        nhận:
-                                                                    </b>{' '}
-                                                                    {
-                                                                        payment.phone
-                                                                    }
-                                                                </div>
-                                                                <div>
-                                                                    {' '}
-                                                                    <b>
-                                                                        Địa chỉ:{' '}
-                                                                    </b>
-                                                                    {
-                                                                        payment.address
-                                                                    }
-                                                                </div>
+                                                                />
                                                                 <div>
                                                                     <b>
                                                                         Trạng
@@ -191,9 +164,7 @@ const AdminPayment = () => {
                                                                         Tổng:{' '}
                                                                     </b>
                                                                     {priceFormat(
-                                                                        parseInt(
-                                                                            payment.totalAmount.toString(),
-                                                                        ),
+                                                                        payment.totalAmount,
                                                                     )}
                                                                 </div>
                                                                 <select
@@ -226,7 +197,7 @@ const AdminPayment = () => {
                                                         </div>
                                                     </div>
                                                 </form>
-                                            </>
+                                            </div>
                                         );
                                     })
                             ) : (
@@ -234,18 +205,22 @@ const AdminPayment = () => {
                                     Chưa có đơn hàng nào
                                 </li>
                             )}
-                            <ReactPaginate
-                                previousLabel={'Previous'}
-                                nextLabel={'Next'}
-                                pageCount={pageCount}
-                                onPageChange={changePage}
-                                containerClassName={'pagination'}
-                                previousLinkClassName={'previous_page'}
-                                nextLinkClassName={'next_page'}
-                                disabledClassName={'pagination_disabled'}
-                                activeClassName={'pagination_active'}
-                                pageLinkClassName={'page_link'}
-                            />
+                            {payments && payments.length > 0 ? (
+                                <ReactPaginate
+                                    previousLabel={'Previous'}
+                                    nextLabel={'Next'}
+                                    pageCount={pageCount}
+                                    onPageChange={changePage}
+                                    containerClassName={'pagination'}
+                                    previousLinkClassName={'previous_page'}
+                                    nextLinkClassName={'next_page'}
+                                    disabledClassName={'pagination_disabled'}
+                                    activeClassName={'pagination_active'}
+                                    pageLinkClassName={'page_link'}
+                                />
+                            ) : (
+                                <div className="hidden" />
+                            )}
                         </ul>
                     </div>
                 )}
