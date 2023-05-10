@@ -9,9 +9,13 @@ const AddressList = () => {
     const productPerPage = 4;
     const pagesVisited = pageNumber * productPerPage;
 
-    const pageCount = Math.ceil(addressList?.length / productPerPage);
+    let pageCount;
 
-    const changePage = ({ selected }) => {
+    if (addressList != undefined) {
+        pageCount = Math.ceil(addressList?.length / productPerPage);
+    }
+
+    const changePage = ({ selected }: any) => {
         setPageNumber(selected);
     };
     return (

@@ -27,7 +27,7 @@ const TicketContainer = () => {
         pageCount = Math.ceil(tickets?.length / productPerPage);
     }
 
-    const changePage = ({ selected }) => {
+    const changePage = ({ selected }: any) => {
         setPageNumber(selected);
     };
 
