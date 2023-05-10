@@ -80,7 +80,7 @@ export const adminRouter = router({
             const payments = ctx.prisma.payment.findMany({
                 select: {
                     id: true,
-                    updatedAt: true,
+                    createdAt: true,
                     totalAmount: true,
                     shippingStatus: true,
                     status: true,

@@ -110,7 +110,7 @@ const AdminPayment = () => {
                                                                     vào:
                                                                 </b>{' '}
                                                                 {dateFormat(
-                                                                    payment.updatedAt,
+                                                                    payment.createdAt,
                                                                 )}
                                                             </div>
                                                             <div>
