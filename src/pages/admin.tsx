@@ -6,6 +6,7 @@
 
 import type { NextPage } from 'next';
 import { useSession } from 'next-auth/react';
+import Head from 'next/head';
 import AdminContainer from '~/admin/AdminContainer';
 
 const Admin: NextPage = () => {
@@ -13,6 +14,9 @@ const Admin: NextPage = () => {
     if (session?.user.role === 'Admin') {
         return (
             <>
+                <Head>
+                    <title>Quản trị viên</title>
+                </Head>
                 <div className="full-size flex flex-col">
                     <div className="flex ">
                         <AdminContainer />
@@ -22,9 +26,15 @@ const Admin: NextPage = () => {
         );
     }
     return (
-        <div className="absolute-center mt-36 font-primary text-5xl">
-            Bạn không phải quản trị viên
-        </div>
+        <>
+            {' '}
+            <Head>
+                <title>Quản trị viên</title>
+            </Head>{' '}
+            <div className="absolute-center mt-36 font-primary text-5xl">
+                Bạn không phải quản trị viên
+            </div>
+        </>
     );
 };
 
