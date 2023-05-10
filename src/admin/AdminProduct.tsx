@@ -25,7 +25,11 @@ const AdminProduct = () => {
     const productPerPage = 12;
     const pagesVisited = pageNumber * productPerPage;
 
-    const pageCount = Math.ceil(products?.items.length / productPerPage);
+    let pageCount;
+
+    if (products != undefined) {
+        pageCount = Math.ceil(products?.items.length / productPerPage);
+    }
 
     const changePage = ({ selected }: any) => {
         setPageNumber(selected);

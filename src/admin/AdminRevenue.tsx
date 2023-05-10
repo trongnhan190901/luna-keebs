@@ -20,7 +20,7 @@ const AdminRevenue = () => {
             2023: new Array(12).fill(0),
             2024: new Array(12).fill(0),
         };
-        if (revenues) {
+        if (revenues != undefined && revenues != null) {
             revenues?.map((item) => {
                 if (item._id.year === year) {
                     arr[year].splice(item._id.month - 1, 1, item.totalAmount);
