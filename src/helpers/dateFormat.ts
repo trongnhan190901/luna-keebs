@@ -7,3 +7,11 @@ export const dateFormat = (date: Date) => {
         minute: 'numeric',
     });
 };
+
+export const getDate = (date: Date) => {
+    return date.toLocaleDateString('en-GB', {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+    });
+};

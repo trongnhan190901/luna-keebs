@@ -17,6 +17,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 const payment = async (req: NextApiRequest, res: NextApiResponse) => {
     const { method, query } = req;
     const { params } = query;
+
     console.log(req.body);
 
     const VNPAY_CONFIGS = JSON.parse(String(process.env.VNPAY_CONFIGS));
@@ -38,6 +39,7 @@ const payment = async (req: NextApiRequest, res: NextApiResponse) => {
             const { userId } = req.body;
             const orderInfo = req.body.orderDescription;
             const totalAmount = req.body.amount;
+            const addressId = req.body.addressId;
 
             if (!orderInfo) {
                 return res
@@ -61,6 +63,7 @@ const payment = async (req: NextApiRequest, res: NextApiResponse) => {
                     payments: {
                         create: {
                             status: 'PENDING',
+                            addressId,
                             paymentGId: orderInfo,
                             totalAmount: totalAmount,
                             paymentDetails: {

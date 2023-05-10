@@ -3,6 +3,6 @@ const VND = new Intl.NumberFormat('vi-VN', {
     currency: 'VND',
 });
 
-export const priceFormat = (price: number) => {
+export const priceFormat = (price: bigint) => {
     return VND.format(price);
 };

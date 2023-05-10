@@ -1,29 +1,40 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { Dialog, Transition } from '@headlessui/react';
 import { useAtom } from 'jotai';
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 import { ticketState } from '~/atoms/modalAtom';
 import { api } from '~/utils/api';
 import toast from 'react-hot-toast';
 import type { inferProcedureInput } from '@trpc/server';
 import type { AppRouter } from '~/server/api/root';
+import { refetchAtom } from '~/atoms/dataAtom';
+import { TicketIcon } from '@heroicons/react/24/outline';
 
 interface TicketModalProps {
     paymentId: string;
     productId: string;
-    refetch: () => void;
 }
-const TicketModal = ({ paymentId, productId, refetch }: TicketModalProps) => {
-    const [isOpen, setIsOpen] = useAtom(ticketState);
+const TicketModal = ({ paymentId, productId }: TicketModalProps) => {
+    const [isOpen, setIsOpen] = useState(false);
     const createTicket = api.user.createTicket.useMutation();
+    const [refetchStatus, setRefetchStatus] = useAtom(refetchAtom);
 
-    const { data: issueList } = api.user.getTicketIssue.useQuery(undefined, {
-        refetchOnWindowFocus: false,
-        onError: (err) => console.error(err.message),
-    });
+    const { data: issueList, refetch } = api.user.getTicketIssue.useQuery(
+        undefined,
+        {
+            refetchOnWindowFocus: false,
+            onError: (err) => console.error(err.message),
+        },
+    );
 
     return (
         <>
+            <div>
+                <TicketIcon
+                    onClick={() => setIsOpen(!isOpen)}
+                    className="h-12 w-12 hover:-translate-y-1 hover:scale-110 hover:cursor-pointer"
+                />
+            </div>
             <Transition
                 show={isOpen}
                 enter="transition duration-100 ease-out"
@@ -72,7 +83,8 @@ const TicketModal = ({ paymentId, productId, refetch }: TicketModalProps) => {
                                         toast.success(
                                             'Gửi yêu cầu hỗ trợ thành công',
                                         );
-                                        refetch();
+                                        setRefetchStatus('success');
+                                        void refetch();
                                         $form.reset();
                                     } catch (cause) {
                                         toast.error(

@@ -5,13 +5,18 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import type { inferRouterOutputs } from '@trpc/server';
-import { z } from 'zod';
+import { date, z } from 'zod';
 import { createProductInputSchema } from '~/helpers/validations/productRoutesSchema';
 import { getPreSignedUrl } from '~/server/handlers/s3/getPreSignedUrl';
 import { adminProcedure } from '~/server/api/procedures';
 import { router } from '~/server/api/trpc';
 import slugify from 'slugify';
-import { TICKET_STATUS } from '@prisma/client';
+import { SHIPPING_STATUS, TICKET_STATUS } from '@prisma/client';
+import id from 'date-fns/locale/id';
+
+function getDaysInMonth(month: number, year: number) {
+    return new Date(month, year, 0).getDate();
+}
 
 export const adminRouter = router({
     getSignedUrl: adminProcedure
@@ -22,14 +27,6 @@ export const adminRouter = router({
         )
         .mutation(async ({ input }) => getPreSignedUrl(input.id)),
 
-    getCategoryList: adminProcedure.query(async ({ ctx }) => {
-        return await ctx.prisma.category.findMany({
-            select: {
-                id: true,
-                name: true,
-            },
-        });
-    }),
     createProduct: adminProcedure
         .input(createProductInputSchema)
         .mutation(async ({ ctx, input }) => {
@@ -65,18 +62,18 @@ export const adminRouter = router({
             }),
         )
         .mutation(async ({ ctx, input }) => {
-            return await ctx.prisma.product.update({
+            return await ctx.prisma.product.delete({
                 where: {
                     id: input.id,
-                },
-                data: {
-                    deleted: true,
-                    updatedAt: new Date(),
                 },
             });
         }),
     findAllPayment: adminProcedure
-        .input(z.object({ includeProduct: z.boolean() }))
+        .input(
+            z.object({
+                includeProduct: z.boolean(),
+            }),
+        )
         .query(async ({ ctx, input }) => {
             const { includeProduct } = input;
 
@@ -85,7 +82,9 @@ export const adminRouter = router({
                     id: true,
                     updatedAt: true,
                     totalAmount: true,
+                    shippingStatus: true,
                     status: true,
+                    addressId: true,
                     paymentDetails: {
                         include: {
                             product: includeProduct
@@ -102,11 +101,33 @@ export const adminRouter = router({
                         },
                     },
                 },
+                orderBy: {
+                    createdAt: 'desc',
+                },
             });
 
             return payments;
         }),
+    updateShipping: adminProcedure
+        .input(
+            z.object({
+                id: z.string(),
+                status: z.nativeEnum(SHIPPING_STATUS),
+            }),
+        )
+        .mutation(async ({ ctx, input }) => {
+            const { id, status } = input;
 
+            const ticket = await ctx.prisma.payment.update({
+                where: { id },
+                data: {
+                    updatedAt: new Date(),
+                    shippingStatus: status,
+                },
+            });
+
+            return ticket;
+        }),
     findAllTicket: adminProcedure.query(async ({ ctx }) => {
         const allTicket = ctx.prisma.ticket.findMany({
             select: {
@@ -129,6 +150,9 @@ export const adminRouter = router({
                         title: true,
                     },
                 },
+            },
+            orderBy: {
+                createdAt: 'desc',
             },
         });
 
@@ -155,6 +179,46 @@ export const adminRouter = router({
             });
 
             return ticket;
+        }),
+
+    findRevenue: adminProcedure.query(async ({ ctx }) => {
+        const revenue = ctx.prisma.payment.aggregateRaw({
+            pipeline: [
+                {
+                    $match: {
+                        status: 'SUCCESS',
+                    },
+                },
+                {
+                    $group: {
+                        _id: {
+                            month: { $month: '$createdAt' },
+                            year: { $year: '$createdAt' },
+                        },
+                        totalAmount: { $sum: '$totalAmount' },
+                    },
+                },
+            ],
+        });
+        return revenue;
+    }),
+    findPaymentAddress: adminProcedure
+        .input(z.object({ data: z.string() }))
+        .query(async ({ ctx, input }) => {
+            const { data } = input;
+
+            const address = await ctx.prisma.address.findUnique({
+                where: { id: data },
+                select: {
+                    name: true,
+                    phone: true,
+                    home: true,
+                    province: true,
+                    district: true,
+                    ward: true,
+                },
+            });
+            return address;
         }),
 });
 

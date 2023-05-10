@@ -12,7 +12,7 @@ const MobileSearch = () => {
                     autoFocus
                     type="text"
                     className="h-20 w-full bg-[#F3F2EC] pl-6 text-2xl focus:outline-none"
-                    placeholder="Bạn tìm sách gì thế ? 	(.❛ ᴗ ❛.)"
+                    placeholder="Bạn tìm gì thế ? 	(.❛ ᴗ ❛.)"
                 />
             </Menu.Items>
         </Menu>

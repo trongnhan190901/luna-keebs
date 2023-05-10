@@ -1,29 +1,16 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Navigation, Pagination, Autoplay, Scrollbar, A11y } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { api } from '~/utils/api';
-import { useEffect, Fragment } from 'react';
 import SliderCard from './SliderCard';
+import { Fragment } from 'react';
 
 const Slider = () => {
-    const utils = api.useContext();
-    const getAllProductQuery = api.product.getAllProduct.useInfiniteQuery(
-        {
-            limit: 5,
-        },
-        {
-            getPreviousPageParam(lastPage) {
-                return lastPage.nextCursor;
-            },
-        },
-    );
-
-    useEffect(() => {
-        const productsArray =
-            getAllProductQuery.data?.pages.flatMap((page) => page.items) ?? [];
-        for (const { id } of productsArray) {
-            void utils.product.getProduct.prefetch({ id });
-        }
-    }, [getAllProductQuery.data, utils]);
+    const getAllProductQuery = api.product.getAllProduct.useQuery({
+        limit: 5,
+        orderByTime: 'desc',
+    });
 
     return (
         <>
@@ -38,19 +25,18 @@ const Slider = () => {
                     ]}
                     navigation
                     allowTouchMove={false}
+                    initialSlide={1}
                     autoplay={{ delay: 5000 }}
                     loop={true}
                     speed={1200}
                     pagination={{ clickable: true }}
                     scrollbar={{ draggable: true }}
                 >
-                    {getAllProductQuery.data?.pages.map((page, index) => (
-                        <Fragment key={page.items[0]?.id || index}>
-                            {page.items.map((product) => (
-                                <SwiperSlide key={product.id}>
-                                    <SliderCard product={product} />
-                                </SwiperSlide>
-                            ))}
+                    {getAllProductQuery.data?.items.map((product, index) => (
+                        <Fragment key={index}>
+                            <SwiperSlide key={product.id}>
+                                <SliderCard product={product} />
+                            </SwiperSlide>
                         </Fragment>
                     ))}
                 </Swiper>

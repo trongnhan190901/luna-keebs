@@ -27,16 +27,15 @@ const CartItem = ({
             <div className="mt-4 flex w-full border-b">
                 <div className="flex h-52 w-full items-center font-primary text-3xl">
                     <div className="flex h-full w-1/2 space-x-5">
+                        <img
+                            src={`https://${product.image}`}
+                            alt=""
+                            className="absolute-center h-48 w-56 rounded-xl object-cover"
+                        />
                         <Link
                             className="mt-2 outline-0"
                             href={`/product/${product?.slug}`}
                         >
-                            <img
-                                src={`https://${product.image}`}
-                                alt=""
-                                className="absolute-center h-48 w-56 rounded-xl object-cover"
-                            />
-
                             <h2 className="text-4xl font-bold hover:text-blue-500">
                                 {product?.title}
                             </h2>
@@ -44,7 +43,7 @@ const CartItem = ({
                     </div>
                     <div className="mt-12 flex h-full w-1/2 text-center">
                         <div className="w-2/5">
-                            <div>{priceFormat(parseInt(product.price))}</div>
+                            <div>{priceFormat(product.price)}</div>
                         </div>
                         <div className="w-1/5">
                             <div> {cartQuantity}</div>

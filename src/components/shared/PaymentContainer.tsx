@@ -9,6 +9,7 @@ import PaymentCardItem from './PaymentCardItem';
 import { useAtom } from 'jotai';
 import { ticketState } from '~/atoms/modalAtom';
 import { useState } from 'react';
+import ReactPaginate from 'react-paginate';
 
 const PaymentContainer = () => {
     const {
@@ -29,6 +30,16 @@ const PaymentContainer = () => {
         setPaymentItemId(payment.id);
     };
 
+    const [pageNumber, setPageNumber] = useState(0);
+    const productPerPage = 5;
+    const pagesVisited = pageNumber * productPerPage;
+
+    const pageCount = Math.ceil(payments?.length / productPerPage);
+
+    const changePage = ({ selected }) => {
+        setPageNumber(selected);
+    };
+
     return (
         <>
             {loadStatus === 'loading' ? (
@@ -36,58 +47,73 @@ const PaymentContainer = () => {
                     <Loader />
                 </div>
             ) : (
-                <div className="mx-auto w-4/5">
+                <div className="mx-auto my-16 w-4/5">
                     <ul className="flex flex-col space-y-4">
                         {payments && payments.length > 0 ? (
-                            payments.map((payment, index) => {
-                                return (
-                                    <PaymentCard key={index} payment={payment}>
-                                        {payment.paymentDetails.map(
-                                            (detail, index) => {
-                                                return (
-                                                    <div
-                                                        key={index}
-                                                        className="flex"
-                                                    >
-                                                        <PaymentCardItem
-                                                            product={
-                                                                detail.product
-                                                            }
-                                                            cartQuantity={
-                                                                detail.cartQuantity
-                                                            }
-                                                        />
-                                                        <div>
-                                                            <TicketIcon
-                                                                onClick={() =>
-                                                                    openModal(
-                                                                        detail.product,
-                                                                        payment,
-                                                                    )
+                            payments
+                                .slice(
+                                    pagesVisited,
+                                    pagesVisited + productPerPage,
+                                )
+                                .map((payment, index) => {
+                                    return (
+                                        <PaymentCard
+                                            key={index}
+                                            payment={payment}
+                                        >
+                                            {payment.paymentDetails.map(
+                                                (detail, index) => {
+                                                    return (
+                                                        <div
+                                                            key={index}
+                                                            className="flex"
+                                                        >
+                                                            <PaymentCardItem
+                                                                product={
+                                                                    detail.product
                                                                 }
-                                                                className="h-12 w-12 hover:-translate-y-1 hover:scale-110 hover:cursor-pointer"
+                                                                cartQuantity={
+                                                                    detail.cartQuantity
+                                                                }
+                                                            />
+
+                                                            <TicketModal
+                                                                productId={
+                                                                    detail
+                                                                        .product
+                                                                        .id
+                                                                }
+                                                                paymentId={
+                                                                    payment.id
+                                                                }
                                                             />
                                                         </div>
-                                                        <TicketModal
-                                                            productId={
-                                                                productItemId
-                                                            }
-                                                            paymentId={
-                                                                paymentItemId
-                                                            }
-                                                            refetch={refetch}
-                                                        />
-                                                    </div>
-                                                );
-                                            },
-                                        )}
-                                    </PaymentCard>
-                                );
-                            })
+                                                    );
+                                                },
+                                            )}
+                                        </PaymentCard>
+                                    );
+                                })
                         ) : (
                             <li className="text-3xl">
                                 Bạn chưa mua sản phẩm nào
                             </li>
+                        )}
+                        {payments && payments.length > 0 ? (
+                            <ReactPaginate
+                                previousLabel={'Previous'}
+                                nextLabel={'Next'}
+                                pageCount={pageCount}
+                                onPageChange={changePage}
+                                containerClassName={'pagination'}
+                                previousLinkClassName={'previous_page'}
+                                nextLinkClassName={'next_page'}
+                                disabledClassName={'pagination_disabled'}
+                                activeClassName={'pagination_active'}
+                                pageLinkClassName={'page_link'}
+                            />
+                        ) : (
+                            <div className="hidden" />
                         )}
                     </ul>
                 </div>

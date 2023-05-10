@@ -9,6 +9,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useDebounce } from 'usehooks-ts';
 import { api } from '~/utils/api';
+import { priceFormat } from '~/helpers/priceFormat';
 
 interface ResultItemProps {
     product: {
@@ -16,16 +17,16 @@ interface ResultItemProps {
         title: string;
         slug: string;
         image: string;
-        price: string;
+        price: bigint;
     };
 }
 
 function ResultItem({ product }: ResultItemProps) {
     return (
-        <li className="smooth-effect mx-auto h-52 w-full rounded-xl hover:bg-gray-300 ">
+        <li className="smooth-effect mx-auto h-64 w-full rounded-xl hover:bg-gray-400 ">
             <Link
                 href={`/product/${product.slug}`}
-                className="flex h-full w-full items-center space-x-2 p-2 py-4 md:space-x-3 md:px-20"
+                className="flex h-full w-full items-center space-x-2 p-2  md:space-x-3 md:px-20"
             >
                 <div className="h-fit w-fit">
                     <figure className="relative mx-auto h-full w-full overflow-hidden rounded-2xl lg:h-36 lg:w-56">
@@ -43,7 +44,7 @@ function ResultItem({ product }: ResultItemProps) {
                         {product.title}
                     </h1>
                     <h2 className="ml-auto w-full text-center">
-                        {product.price} ₫
+                        {priceFormat(product?.price)}
                     </h2>
                 </div>
             </Link>
@@ -111,7 +112,7 @@ const SearchModal = () => {
                     className="fixed inset-0 z-10 flex overflow-y-auto"
                 >
                     <Dialog.Overlay className="full-size z-0 bg-black opacity-40" />
-                    <div className="absolute-center fixed top-[15%] left-1/2 z-20 flex h-[600px] w-[600px] -translate-x-1/2 flex-col rounded-3xl bg-white/80 font-primary text-xl font-semibold backdrop-blur-md">
+                    <div className="absolute-center fixed top-[15%] left-1/2 z-20 flex h-fit w-[600px] -translate-x-1/2 flex-col rounded-3xl bg-white/80 pb-8 font-primary text-xl font-semibold backdrop-blur-md">
                         <Dialog.Panel className="full-size absolute-center flex-col">
                             <div className="full-size flex flex-col rounded-xl bg-transparent ">
                                 <input

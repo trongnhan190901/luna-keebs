@@ -25,40 +25,36 @@ export const productRouter = router({
         .input(
             z.object({
                 limit: z.number().min(1).max(100).nullish(),
-                cursor: z.string().nullish(),
+                orderByTime: z.string().default('asc'),
             }),
         )
         .query(async ({ ctx, input }) => {
             const limit = input.limit ?? 50;
-            const { cursor } = input;
+            const { orderByTime } = input;
 
             const items = await ctx.prisma.product.findMany({
-                take: limit + 1,
-                where: {},
-                cursor: cursor
-                    ? {
-                          id: cursor,
-                      }
-                    : undefined,
+                take: limit,
+                orderBy: {
+                    createdAt: orderByTime,
+                },
             });
-            let nextCursor: typeof cursor | undefined = undefined;
-            if (items.length > limit) {
-                // Remove the last item and use it as next cursor
-
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                const nextItem = items.pop()!;
-                nextCursor = nextItem.id;
-            }
 
             return {
-                items: items.reverse(),
-                nextCursor,
+                items: items,
             };
         }),
+    getCategoryList: publicProcedure.query(async ({ ctx }) => {
+        return await ctx.prisma.category.findMany({
+            select: {
+                id: true,
+                name: true,
+            },
+        });
+    }),
     findProductBySearch: publicProcedure
-        .input(z.object({ title: z.string(), limit: z.number().optional() }))
+        .input(z.object({ title: z.string() }))
         .query(async ({ ctx, input }) => {
-            const { title, limit } = input;
+            const { title } = input;
 
             const products = await ctx.prisma.product.findRaw({
                 filter: { title: { $regex: `^${title}`, $options: 'i' } },
