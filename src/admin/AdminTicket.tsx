@@ -26,14 +26,14 @@ const AdminTicket = () => {
     const productPerPage = 5;
     const pagesVisited = pageNumber * productPerPage;
 
-    const pageCount = Math.ceil(allTicket?.length / productPerPage);
+    let pageCount;
 
-    const changePage = ({ selected }) => {
+    if (allTicket != undefined) {
+        pageCount = Math.ceil(allTicket?.length / productPerPage);
+    }
+
+    const changePage = ({ selected }: any) => {
         setPageNumber(selected);
-    };
-
-    const changeData = (data: string) => {
-        setData(data);
     };
 
     return (

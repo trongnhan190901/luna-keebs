@@ -11,7 +11,7 @@ import type { AppRouter } from '~/server/api/root';
 import type { SHIPPING_STATUS } from '@prisma/client';
 import { useState } from 'react';
 import ReactPaginate from 'react-paginate';
-import PaymentAddress from './PaymentAddress';
+import PaymentAddress from './PaymentAddressAdmin';
 
 const AdminPayment = () => {
     const {
@@ -28,9 +28,13 @@ const AdminPayment = () => {
     const productPerPage = 5;
     const pagesVisited = pageNumber * productPerPage;
 
-    const pageCount = Math.ceil(payments?.length / productPerPage);
+    let pageCount;
 
-    const changePage = ({ selected }) => {
+    if (payments != undefined) {
+        pageCount = Math.ceil(payments?.length / productPerPage);
+    }
+
+    const changePage = ({ selected }: any) => {
         setPageNumber(selected);
     };
 
