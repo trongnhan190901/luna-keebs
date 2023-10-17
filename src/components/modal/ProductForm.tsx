@@ -8,24 +8,20 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 
 import { Dialog, Transition } from '@headlessui/react';
+import type { inferProcedureInput } from '@trpc/server';
 import { useAtom } from 'jotai';
-import { Fragment } from 'react';
-import { addProductState } from '~/atoms/modalAtom';
+import Image from 'next/image';
+import { Fragment, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'react-hot-toast';
+import { isRefetch } from '~/atoms/dataAtom';
+import Input from '~/components/shared/Input';
+import cn from '~/helpers/cn';
+import type { CreateProductsInput } from '~/helpers/validations/productRoutesSchema';
+import useUploadImage from '~/hooks/useUploadImage';
+import type { AppRouter } from '~/server/api/root';
 import type { FullProductClient } from '~/types';
 import { api } from '~/utils/api';
-import useUploadImage from '~/hooks/useUploadImage';
-import cn from '~/helpers/cn';
-import Input from '~/components/shared/Input';
-import Button from '~/components/buttons/Button';
-import Image from 'next/image';
-import DeleteProduct from '../../admin/DeleteProduct';
-import type { inferProcedureInput } from '@trpc/server';
-import type { AppRouter } from '~/server/api/root';
-import { toast } from 'react-hot-toast';
-import { useState } from 'react';
-import type { CreateProductsInput } from '~/helpers/validations/productRoutesSchema';
-import { isRefetch } from '~/atoms/dataAtom';
 
 interface AddNewProductProps {
     type: 'add' | 'edit';
@@ -114,7 +110,6 @@ const ProductForm = ({ type, initialData }: AddNewProductProps) => {
                                 categoryName: values.categoryName as string,
                                 price: BigInt(values.price),
                                 image: imageUrl as string,
-                                quantity: parseInt(values.quantity),
                                 desc: values.desc as string,
                             };
 
@@ -198,17 +193,6 @@ const ProductForm = ({ type, initialData }: AddNewProductProps) => {
                                                     className="w-80"
                                                     name="price"
                                                     // type="number"
-                                                />
-                                            </div>
-                                            <div className="w-full">
-                                                <Input
-                                                    title="Số lượng"
-                                                    placeholder="Nhập số lượng"
-                                                    required
-                                                    id="quan"
-                                                    className="w-56"
-                                                    // type="number"
-                                                    name="quantity"
                                                 />
                                             </div>
                                         </div>

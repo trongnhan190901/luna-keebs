@@ -1,17 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { Navigation, Pagination, Autoplay, Scrollbar, A11y } from 'swiper';
+import { A11y, Autoplay, Navigation, Pagination, Scrollbar } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { api } from '~/utils/api';
 import SliderCard from './SliderCard';
-import { Fragment } from 'react';
 
 const Slider = () => {
-    const getAllProductQuery = api.product.getAllProduct.useQuery({
-        limit: 5,
-        orderByTime: 'desc',
-    });
-
     return (
         <>
             <div className="z-0 h-full w-full">
@@ -32,13 +25,15 @@ const Slider = () => {
                     pagination={{ clickable: true }}
                     scrollbar={{ draggable: true }}
                 >
-                    {getAllProductQuery.data?.items.map((product, index) => (
-                        <Fragment key={index}>
-                            <SwiperSlide key={product.id}>
-                                <SliderCard product={product} />
-                            </SwiperSlide>
-                        </Fragment>
-                    ))}
+                    <SwiperSlide>
+                        <SliderCard image={''} />
+                    </SwiperSlide>
+                    <SwiperSlide>
+                        <SliderCard image={''} />
+                    </SwiperSlide>
+                    <SwiperSlide>
+                        <SliderCard image={''} />
+                    </SwiperSlide>
                 </Swiper>
             </div>
         </>

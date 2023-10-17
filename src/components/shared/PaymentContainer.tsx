@@ -1,15 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
-import { TicketIcon } from '@heroicons/react/24/outline';
+import { useAtom } from 'jotai';
+import { useState } from 'react';
+import ReactPaginate from 'react-paginate';
+import { ticketState } from '~/atoms/modalAtom';
 import { api } from '~/utils/api';
-import TicketModal from '../modal/TicketModal';
 import Loader from './Loader';
 import PaymentCard from './PaymentCard';
 import PaymentCardItem from './PaymentCardItem';
-import { useAtom } from 'jotai';
-import { ticketState } from '~/atoms/modalAtom';
-import { useState } from 'react';
-import ReactPaginate from 'react-paginate';
 
 const PaymentContainer = () => {
     const {
@@ -36,7 +34,7 @@ const PaymentContainer = () => {
 
     const pageCount = Math.ceil(payments?.length / productPerPage);
 
-    const changePage = ({ selected }) => {
+    const changePage = ({ selected }: any) => {
         setPageNumber(selected);
     };
 
@@ -77,7 +75,7 @@ const PaymentContainer = () => {
                                                                 }
                                                             />
 
-                                                            <TicketModal
+                                                            {/* <TicketModal
                                                                 productId={
                                                                     detail
                                                                         .product
@@ -86,7 +84,7 @@ const PaymentContainer = () => {
                                                                 paymentId={
                                                                     payment.id
                                                                 }
-                                                            />
+                                                            /> */}
                                                         </div>
                                                     );
                                                 },

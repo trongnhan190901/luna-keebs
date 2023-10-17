@@ -3,14 +3,13 @@
 import { useAtom } from 'jotai';
 import { useEffect, useState } from 'react';
 import ReactPaginate from 'react-paginate';
-import { addProductState } from '~/atoms/modalAtom';
+import { isRefetch } from '~/atoms/dataAtom';
 import ProductForm from '~/components/modal/ProductForm';
 import Loader from '~/components/shared/Loader';
 import ProductCard from '~/components/shared/ProductCard';
 import { api } from '~/utils/api';
 import DeleteProduct from './DeleteProduct';
 import EditProduct from './EditProduct';
-import { isRefetch } from '~/atoms/dataAtom';
 
 const AdminProduct = () => {
     const [isRf, setIsRf] = useAtom(isRefetch);
@@ -66,10 +65,7 @@ const AdminProduct = () => {
                                             className="m-2 rounded-2xl p-2"
                                         >
                                             <ProductCard product={item} />
-                                            <div className="absolute-center mb-3 font-secondary text-3xl">
-                                                Số lượng còn lại:{' '}
-                                                {item.quantity}
-                                            </div>
+
                                             <div className="absolute-center w-full space-x-4">
                                                 <EditProduct
                                                     type="edit"

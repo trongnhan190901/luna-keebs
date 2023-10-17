@@ -29,7 +29,6 @@ export interface ProductPreview {
     image: string;
     title: string;
     price: string;
-    quantity: string;
     spec: string;
     desc: string;
     slug: string;

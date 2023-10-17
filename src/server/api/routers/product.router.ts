@@ -5,7 +5,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { z } from 'zod';
-import { router, publicProcedure } from '~/server/api/trpc';
+import { publicProcedure, router } from '~/server/api/trpc';
 
 export const productRouter = router({
     getProduct: publicProcedure
@@ -37,6 +37,23 @@ export const productRouter = router({
                 orderBy: {
                     createdAt: orderByTime,
                 },
+            });
+
+            return {
+                items: items,
+            };
+        }),
+    getRandomProduct: publicProcedure
+        .input(
+            z.object({
+                limit: z.number().min(1).max(100).nullish(),
+            }),
+        )
+        .query(async ({ ctx, input }) => {
+            const limit = input.limit ?? 50;
+
+            const items = await ctx.prisma.product.aggregateRaw({
+                pipeline: [{ $sample: { size: limit } }],
             });
 
             return {

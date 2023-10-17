@@ -1,15 +1,14 @@
-import { useAtom } from 'jotai';
-import type { GetServerSideProps } from 'next';
-import { useSession, getSession } from 'next-auth/react';
-import { logInState, newAddressState } from '~/atoms/modalAtom';
-import Login from '../modal/Login';
-import PaymentContainer from './PaymentContainer';
-import TicketContainer from './TicketContainer';
-import { useState } from 'react';
 import { Tab } from '@headlessui/react';
 import classNames from 'classnames';
+import { useAtom } from 'jotai';
+import type { GetServerSideProps } from 'next';
+import { getSession, useSession } from 'next-auth/react';
+import { useState } from 'react';
+import { logInState, newAddressState } from '~/atoms/modalAtom';
 import AddressModal from '../modal/AddressModal';
+import Login from '../modal/Login';
 import AddressList from './AddressList';
+import PaymentContainer from './PaymentContainer';
 
 const UserContainer = () => {
     const { data: session, status } = useSession();
@@ -114,7 +113,7 @@ const UserContainer = () => {
                                 <PaymentContainer />
                             </div>
                         </Tab.Panel>
-                        <Tab.Panel className="absolute-center full-size flex-col">
+                        {/* <Tab.Panel className="absolute-center full-size flex-col">
                             {' '}
                             <div className="full-size absolute-center flex-col">
                                 <div className="absolute-center my-4 mt-28 font-secondary text-7xl font-bold">
@@ -122,7 +121,7 @@ const UserContainer = () => {
                                 </div>
                                 <TicketContainer />
                             </div>
-                        </Tab.Panel>
+                        </Tab.Panel> */}
                     </Tab.Panels>
                 </Tab.Group>
             </>

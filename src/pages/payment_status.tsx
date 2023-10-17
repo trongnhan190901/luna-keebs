@@ -15,7 +15,7 @@ const PaymentStatus: NextPage = () => {
                     <div className="absolute-center w-full space-x-6">
                         <button className="btn-follow-theme btn-lg btn text-2xl hover:text-blue-500">
                             <Link href="/account">
-                                Xem lại lịch sử thanh toán
+                                Đến trang thông tin tài khoản
                             </Link>
                         </button>
                     </div>

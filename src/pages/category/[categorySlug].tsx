@@ -46,7 +46,7 @@ const Category = ({ products, title }: CategoryProps) => {
                 <title>{title}</title>
             </Head>
             <div className="full-size absolute-center flex-col">
-                <div className="mx-auto mt-12 w-[85%]">
+                <div className="mx-auto mb-24 mt-12 w-[85%]">
                     <div className="absolute-center my-12 font-secondary text-7xl font-bold">
                         {title}
                     </div>

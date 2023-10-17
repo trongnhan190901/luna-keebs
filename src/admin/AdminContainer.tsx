@@ -1,9 +1,8 @@
 import { Tab } from '@headlessui/react';
+import classNames from 'classnames';
 import { useState } from 'react';
 import AdminPayment from '~/admin/AdminPayment';
 import AdminRevenue from '~/admin/AdminRevenue';
-import AdminTicket from '~/admin/AdminTicket';
-import classNames from 'classnames';
 import AdminProduct from './AdminProduct';
 
 const AdminContainer = () => {
@@ -19,7 +18,7 @@ const AdminContainer = () => {
                     <Tab
                         className={({ selected }) =>
                             classNames(
-                                'absolute-center h-1/4 w-full',
+                                'absolute-center h-1/3 w-full',
                                 selected ? 'bg-black text-white' : 'text-black',
                             )
                         }
@@ -29,14 +28,14 @@ const AdminContainer = () => {
                     <Tab
                         className={({ selected }) =>
                             classNames(
-                                'absolute-center h-1/4 w-full',
+                                'absolute-center h-1/3 w-full',
                                 selected ? 'bg-black text-white' : 'text-black',
                             )
                         }
                     >
                         Đơn hàng
                     </Tab>
-                    <Tab
+                    {/* <Tab
                         className={({ selected }) =>
                             classNames(
                                 'absolute-center h-1/4 w-full',
@@ -45,11 +44,11 @@ const AdminContainer = () => {
                         }
                     >
                         Phiếu hỗ trợ
-                    </Tab>
+                    </Tab> */}
                     <Tab
                         className={({ selected }) =>
                             classNames(
-                                'absolute-center h-1/4 w-full',
+                                'absolute-center h-1/3 w-full',
                                 selected ? 'bg-black text-white' : 'text-black',
                             )
                         }
@@ -73,7 +72,7 @@ const AdminContainer = () => {
                             <AdminPayment />
                         </div>
                     </Tab.Panel>
-                    <Tab.Panel className="absolute-center h-full w-4/5 flex-col">
+                    {/* <Tab.Panel className="absolute-center h-full w-4/5 flex-col">
                         {' '}
                         <div className="full-size absolute-center flex-col">
                             <div className="absolute-center my-4 mt-28 font-secondary text-7xl font-bold">
@@ -81,7 +80,7 @@ const AdminContainer = () => {
                             </div>
                             <AdminTicket />
                         </div>
-                    </Tab.Panel>
+                    </Tab.Panel> */}
                     <Tab.Panel className="absolute-center full-size flex-col">
                         {' '}
                         <div className="full-size absolute-center flex-col">
