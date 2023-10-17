@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @next/next/no-img-element */
-import { useEffect, useState } from 'react';
-import { useCartContext } from '~/providers/CartContextProvider';
-import type { Product } from '@prisma/client';
-import { useSession } from 'next-auth/react';
-import { useAtom } from 'jotai';
-import { logInState } from '~/atoms/modalAtom';
-import Login from '../modal/Login';
 import { MinusIcon, PlusIcon } from '@heroicons/react/24/outline';
+import type { Product } from '@prisma/client';
+import { useAtom } from 'jotai';
+import { useSession } from 'next-auth/react';
+import { useEffect, useState } from 'react';
+import { logInState } from '~/atoms/modalAtom';
 import { priceFormat } from '~/helpers/priceFormat';
+import { useCartContext } from '~/providers/CartContextProvider';
+import Login from '../modal/Login';
 
 interface ProductHeaderProps {
     product: Product;
@@ -116,9 +116,9 @@ const ProductHeader = ({ product }: ProductHeaderProps) => {
                             </button>
                         </div>
                     </div>
-                    <div className="font-secondary text-2xl">
+                    {/* <div className="font-secondary text-2xl">
                         Số lượng còn lại: {product.quantity}
-                    </div>
+                    </div> */}
                     {outOfStock ? (
                         <button
                             disabled={true}

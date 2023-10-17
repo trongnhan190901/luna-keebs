@@ -5,18 +5,13 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import type { inferRouterOutputs } from '@trpc/server';
-import { date, z } from 'zod';
+import { z } from 'zod';
 import { createProductInputSchema } from '~/helpers/validations/productRoutesSchema';
 import { getPreSignedUrl } from '~/server/handlers/s3/getPreSignedUrl';
 import { adminProcedure } from '~/server/api/procedures';
 import { router } from '~/server/api/trpc';
 import slugify from 'slugify';
 import { SHIPPING_STATUS, TICKET_STATUS } from '@prisma/client';
-import id from 'date-fns/locale/id';
-
-function getDaysInMonth(month: number, year: number) {
-    return new Date(month, year, 0).getDate();
-}
 
 export const adminRouter = router({
     getSignedUrl: adminProcedure
@@ -226,4 +221,3 @@ type AdminRouterOutput = inferRouterOutputs<typeof adminRouter>;
 export type CreateProductResponse = AdminRouterOutput['createProduct'];
 export type UpdateProductResponse = AdminRouterOutput['updateProduct'];
 export type DeleteProductResponse = AdminRouterOutput['deleteProduct'];
-export type CategoryListResponse = AdminRouterOutput['getCategoryList'];

@@ -61,7 +61,6 @@ model Product {
   category      Category        @relation(fields: [categoryName], references: [name])
   image         String
   price         BigInt
-  quantity      Int
   spec          String?
   desc          String
   slug          String          @unique
